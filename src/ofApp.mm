@@ -18,11 +18,18 @@ void logSIMD(const simd::float4x4 &matrix)
 
 //--------------------------------------------------------------
 ofApp :: ofApp (ARSession * session){
+    //呼ばれない
     this->session = session;
-    cout << "creating ofApp" << endl;
+    cout << "creating ofApp(ARSession * session)" << endl;
 }
 
-ofApp::ofApp(){}
+ofApp::ofApp(){
+    //SFormatに設定を書き込んで、新しくsessionを始めるみたいな
+    ARCore::SFormat format;
+    format.enableLighting();
+    this->session = ARCore::generateNewSession(format);
+    cout << "creating ofApp()" << endl;
+}
 
 //--------------------------------------------------------------
 ofApp :: ~ofApp () {
@@ -41,7 +48,7 @@ void ofApp::setup() {
     
     font.load("fonts/mono0755.ttf", fontSize);
     
-    processor = ARProcessor::create(session);
+    processor = ARProcessor::create(this->session);
     processor->setup();
 }
 
@@ -62,46 +69,26 @@ void ofApp::draw() {
     processor->draw();
     ofEnableDepthTest();
     
-    if (session.currentFrame){
-        if (session.currentFrame.camera){
-            
-            camera.begin();
-            processor->setARCameraMatrices();
-            
-            mats.clear();
-//            cout << session.currentFrame.anchors.count << endl;
-            for (int i = 0; i < session.currentFrame.anchors.count; i++)
-            {
-                mats.emplace_back(session.currentFrame.anchors[i].transform);
-            }
-            
-            for(int i = 0; i < mats.size(); i++)
-            {
-                // note - if you need to differentiate between different types of anchors, there is a
-                // "isKindOfClass" method in objective-c that could be used. For example, if you wanted to
-                // check for a Plane anchor, you could put this in an if statement.
-                // if([anchor isKindOfClass:[ARPlaneAnchor class]]) { // do something if we find a plane anchor}
-                // Not important for this example but something good to remember.
-                
-                ofPushMatrix();
-                ofMatrix4x4 mat = ARCommon::convert<matrix_float4x4, ofMatrix4x4>(mats[i]);
-                ofMultMatrix(mat);
-                
-                ofSetColor(255);
-                ofRotate(90,0,0,1);
-                
-                //draw something
-//                img.draw(-0.025 / 2, -0.025 / 2,0.025,0.025);
-                aspect = ARCommon::getNativeAspectRatio();
-                fbos[i].draw(ofPoint(-aspect/8, -0.125), aspect/4, 0.25);
-                
-                ofPopMatrix();
-            }
-            
-            camera.end();
-        }
+    processor->anchorController->loopAnchors([=](ARObject obj, int index)->void {
         
-    }
+        camera.begin();
+        processor->setARCameraMatrices();
+        
+        ofPushMatrix();
+        ofMultMatrix(obj.modelMatrix);
+        
+        ofSetColor(255);
+        ofRotate(90,0,0,1);
+        
+        aspect = ARCommon::getNativeAspectRatio();
+        fbos[index].draw(ofPoint(-aspect/8, -0.125), aspect/4, 0.25);
+        
+        ofPopMatrix();
+        
+        camera.end();
+        
+    });
+    
     ofDisableDepthTest();
     // ========== DEBUG STUFF ============= //
 //    processor->debugInfo.drawDebugInformation(font);
@@ -116,43 +103,30 @@ void ofApp::exit() {
 
 //--------------------------------------------------------------
 void ofApp::touchDown(ofTouchEventArgs &touch){
-    if (session.currentFrame){
-        //anchor数が80を超えたら最新をdelete
-        //TODO: なぜかdeleteされないので調べる、、
-        /*
-        if(processor->getNumAnchors() >= 2)
-        {
-            processor->removeAnchor(0);
-            fbos.erase(fbos.begin());
-            mats.erase(mats.begin());
-        }
-        */
-        
-        ARFrame *currentFrame = [session currentFrame];
-        
-        matrix_float4x4 translation = matrix_identity_float4x4;
-        translation.columns[3].z = -0.2;
-        matrix_float4x4 transform = matrix_multiply(currentFrame.camera.transform, translation);
-        
-        // Add a new anchor to the session
-        ARAnchor *anchor = [[ARAnchor alloc] initWithTransform:transform];
-        
-        [session addAnchor:anchor];
-        
-        // fboがローカル変数じゃないとうまくいかない。おそらくメンバー変数だと参照を保持しているので全部変わってしまうみたいな
-        ofFbo fbo;
-        fbo.allocate(WIDTH, HEIGHT, GL_RGBA);
-        fbo.begin();
-        {
-            //w: 640 /h: 1136
-            processor->getFBO().draw(0, 0, WIDTH, HEIGHT);
-        }
-        fbo.end();
-        
-        ofFbo tempFbo = processor->getFBO();
-        
-        fbos.emplace_back(fbo);
+    cout << "num: " << processor->getNumAnchors() << endl;
+    if(processor->getNumAnchors() > MAX_NUM_ANCHORS)
+    {
+        //TODO: 削除はできたけど90超えるとなぜかアプリ落ちるっぽい？、、
+        //一定数超えたらアンカー削除
+        processor->removeAnchor(0);
     }
+    
+//    processor->addAnchor(ofVec3f(touch.x,touch.y,-0.2)); //xy座標指定してアンカー追加, draw側も合わせる必要がある. WIPっぽいので使わない.
+    processor->addAnchor(-0.2);
+    
+    // fboがローカル変数じゃないとうまくいかない。おそらくメンバー変数だと参照を保持しているので全部変わってしまうみたいな
+    ofFbo fbo;
+    fbo.allocate(WIDTH, HEIGHT, GL_RGBA);
+    fbo.begin();
+    {
+        //w: 640 /h: 1136
+        processor->getFBO().draw(0, 0, WIDTH, HEIGHT);
+    }
+    fbo.end();
+    
+    ofFbo tempFbo = processor->getFBO();
+    
+    fbos.emplace_back(fbo);
 }
 
 //--------------------------------------------------------------

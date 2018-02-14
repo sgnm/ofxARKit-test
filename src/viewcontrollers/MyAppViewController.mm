@@ -16,18 +16,20 @@
 
 
 - (void)loadView {
+    //ここが呼ばれてofApp(Session *session)が呼ばれるみたいな。なのでsetup, contructorより前！
     [super loadView];
     
-    ARCore::SFormat format;
-    format.enableLighting();
-    //自動でplane detectionするので、anchorsに自動的にaddされてしまう→out of indexエラー発生する
-//    format.enablePlaneTracking().enableLighting();
-    self.session = ARCore::generateNewSession(format);
+//    //SFormatに設定を書き込んで、新しくsessionを始めるみたいな。公式ではinitのとこで設定周りが書かれてるからexampleもそうしたらしい。
+//    ARCore::SFormat format;
+//    format.enableLighting();
+//    //自動でplane detectionするので、anchorsに自動的にaddされてしまう→out of indexエラー発生する
+////    format.enablePlaneTracking().enableLighting();
+//    self.session = ARCore::generateNewSession(format);
     
     
     OFAppViewController *viewController;
     viewController = [[[OFAppViewController alloc] initWithFrame:[[UIScreen mainScreen] bounds]
-                                                                 app:new ofApp(self.session)] autorelease];
+                                                                 app:new ofApp()] autorelease];
     
     [self.navigationController setNavigationBarHidden:TRUE];
     [self.navigationController pushViewController:viewController animated:NO];

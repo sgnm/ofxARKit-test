@@ -7,6 +7,7 @@
 //w: 640 /h: 1136
 const int WIDTH = 640;
 const int HEIGHT = 1136;
+const int MAX_NUM_ANCHORS = 90;
 
 class ofApp : public ofxiOSApp {
     
