@@ -50,6 +50,12 @@ void ofApp::setup() {
     
     processor = ARProcessor::create(this->session);
     processor->setup();
+    
+#ifdef TARGET_OPENGLES
+    shader.load("shaders/invert");
+#else
+    ofLogError("Set target to OpenGLES!");
+#endif
 }
 
 
@@ -80,8 +86,18 @@ void ofApp::draw() {
         ofSetColor(255);
         ofRotate(90,0,0,1);
         
-        aspect = ARCommon::getNativeAspectRatio();
         fbos[index].draw(ofPoint(-aspect/8, -0.125), aspect/4, 0.25);
+        
+        aspect = ARCommon::getNativeAspectRatio();
+//        shader.begin();
+//        {
+//            shader.setUniform2f("resolution", WIDTH, HEIGHT);
+//            shader.setUniform1i("index", index);
+//            shader.setUniformTexture("texture", fbos[index].getTexture(), index);
+//        }
+//        shader.end();
+        fbos[index].draw(ofPoint(-aspect/8, -0.125), aspect/4, 0.25);
+        
         
         ofPopMatrix();
         
@@ -119,8 +135,15 @@ void ofApp::touchDown(ofTouchEventArgs &touch){
     fbo.allocate(WIDTH, HEIGHT, GL_RGBA);
     fbo.begin();
     {
-        //w: 640 /h: 1136
-        processor->getFBO().draw(0, 0, WIDTH, HEIGHT);
+        shader.begin();
+        {
+            shader.setUniform2f("resolution", WIDTH, HEIGHT);
+//            shader.setUniform1i("index", index);
+            shader.setUniformTexture("texture", processor->getFBO(), 0);
+            //w: 640 /h: 1136
+            processor->getFBO().draw(0, 0, WIDTH, HEIGHT);
+        }
+        shader.end();
     }
     fbo.end();
     

@@ -5,8 +5,8 @@
 #include "ofxARKit.h"
 
 //w: 640 /h: 1136
-const int WIDTH = 640;
-const int HEIGHT = 1136;
+const float WIDTH = 640.0;
+const float HEIGHT = 1136.0;
 const int MAX_NUM_ANCHORS = 90;
 
 class ofApp : public ofxiOSApp {
@@ -46,6 +46,9 @@ public:
     // custom by sgnm
     vector<ofFbo> fbos;
     float aspect;
+    
+    //shader
+    ofShader shader;
 };
 
 
