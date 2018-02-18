@@ -49,6 +49,22 @@ public:
     
     //shader
     ofShader shader;
+    vector<ofShader> shaders;
+    
+    //audio
+    void audioIn(float * input, int bufferSize, int nChannels);
+    
+    int    initialBufferSize;
+    int    sampleRate;
+    int    drawCounter;
+    int bufferCounter;
+    float * buffer;
+    
+    float smoothedVol;
+    float scaledVol;
+    
+    int shaderIndex = 0;
+    bool isPostEffect = true;
 };
 
 
