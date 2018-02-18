@@ -19,6 +19,7 @@
 		54051B142015019700520556 /* OFAppViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 54051B0F2015019700520556 /* OFAppViewController.mm */; };
 		542760B8202C2DD000112A53 /* ofApp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 542760B6202C2DD000112A53 /* ofApp.mm */; };
 		5459C4F3201334E900A57EAD /* ARKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5459C4F2201334E900A57EAD /* ARKit.framework */; };
+		547882772039EA2C00E92221 /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 547882712039EA2C00E92221 /* Timer.cpp */; };
 		548B16F520270055004AB928 /* ofxBaseGui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 548B16E420270055004AB928 /* ofxBaseGui.cpp */; };
 		548B16F620270055004AB928 /* ofxButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 548B16E620270055004AB928 /* ofxButton.cpp */; };
 		548B16F720270055004AB928 /* ofxGuiGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 548B16E920270055004AB928 /* ofxGuiGroup.cpp */; };
@@ -83,6 +84,26 @@
 		542760B6202C2DD000112A53 /* ofApp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofApp.mm; sourceTree = "<group>"; };
 		542760B7202C2DD000112A53 /* ofApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofApp.h; sourceTree = "<group>"; };
 		5459C4F2201334E900A57EAD /* ARKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ARKit.framework; path = System/Library/Frameworks/ARKit.framework; sourceTree = SDKROOT; };
+		5476B50E203986CE0057CE88 /* CaptureDrawer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CaptureDrawer.h; sourceTree = "<group>"; };
+		5476B50F2039897A0057CE88 /* Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
+		5476B51020398B220057CE88 /* Context.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Context.h; sourceTree = "<group>"; };
+		547882632039EA2C00E92221 /* CommandQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandQueue.h; sourceTree = "<group>"; };
+		547882642039EA2C00E92221 /* Composition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Composition.h; sourceTree = "<group>"; };
+		547882652039EA2C00E92221 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		547882672039EA2C00E92221 /* Composition.inc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Composition.inc.h; sourceTree = "<group>"; };
+		547882682039EA2C00E92221 /* coroutine.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = coroutine.hpp; sourceTree = "<group>"; };
+		547882692039EA2C00E92221 /* Easing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Easing.h; sourceTree = "<group>"; };
+		5478826A2039EA2C00E92221 /* Generator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Generator.h; sourceTree = "<group>"; };
+		5478826B2039EA2C00E92221 /* InstanceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InstanceManager.h; sourceTree = "<group>"; };
+		5478826C2039EA2C00E92221 /* Lerp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lerp.h; sourceTree = "<group>"; };
+		5478826D2039EA2C00E92221 /* Pattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Pattern.h; sourceTree = "<group>"; };
+		5478826E2039EA2C00E92221 /* Replicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Replicator.h; sourceTree = "<group>"; };
+		5478826F2039EA2C00E92221 /* SceneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneManager.h; sourceTree = "<group>"; };
+		547882702039EA2C00E92221 /* Sequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sequence.h; sourceTree = "<group>"; };
+		547882712039EA2C00E92221 /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Timer.cpp; sourceTree = "<group>"; };
+		547882722039EA2C00E92221 /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
+		547882732039EA2C00E92221 /* ofxAnimationPrimitives.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxAnimationPrimitives.h; sourceTree = "<group>"; };
+		547882762039EA2C00E92221 /* ofxGlobalContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxGlobalContext.h; sourceTree = "<group>"; };
 		548B16E420270055004AB928 /* ofxBaseGui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBaseGui.cpp; sourceTree = "<group>"; };
 		548B16E520270055004AB928 /* ofxBaseGui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxBaseGui.h; sourceTree = "<group>"; };
 		548B16E620270055004AB928 /* ofxButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxButton.cpp; sourceTree = "<group>"; };
@@ -238,6 +259,71 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		547882602039EA2C00E92221 /* ofxAnimationPrimitives */ = {
+			isa = PBXGroup;
+			children = (
+				547882612039EA2C00E92221 /* src */,
+			);
+			name = ofxAnimationPrimitives;
+			path = ../../../addons/ofxAnimationPrimitives;
+			sourceTree = "<group>";
+		};
+		547882612039EA2C00E92221 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				547882622039EA2C00E92221 /* ofxAnimationPrimitives */,
+				547882732039EA2C00E92221 /* ofxAnimationPrimitives.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		547882622039EA2C00E92221 /* ofxAnimationPrimitives */ = {
+			isa = PBXGroup;
+			children = (
+				547882632039EA2C00E92221 /* CommandQueue.h */,
+				547882642039EA2C00E92221 /* Composition.h */,
+				547882652039EA2C00E92221 /* Constants.h */,
+				547882662039EA2C00E92221 /* detail */,
+				547882692039EA2C00E92221 /* Easing.h */,
+				5478826A2039EA2C00E92221 /* Generator.h */,
+				5478826B2039EA2C00E92221 /* InstanceManager.h */,
+				5478826C2039EA2C00E92221 /* Lerp.h */,
+				5478826D2039EA2C00E92221 /* Pattern.h */,
+				5478826E2039EA2C00E92221 /* Replicator.h */,
+				5478826F2039EA2C00E92221 /* SceneManager.h */,
+				547882702039EA2C00E92221 /* Sequence.h */,
+				547882712039EA2C00E92221 /* Timer.cpp */,
+				547882722039EA2C00E92221 /* Timer.h */,
+			);
+			path = ofxAnimationPrimitives;
+			sourceTree = "<group>";
+		};
+		547882662039EA2C00E92221 /* detail */ = {
+			isa = PBXGroup;
+			children = (
+				547882672039EA2C00E92221 /* Composition.inc.h */,
+				547882682039EA2C00E92221 /* coroutine.hpp */,
+			);
+			path = detail;
+			sourceTree = "<group>";
+		};
+		547882742039EA2C00E92221 /* ofxGlobalContext */ = {
+			isa = PBXGroup;
+			children = (
+				547882752039EA2C00E92221 /* src */,
+			);
+			name = ofxGlobalContext;
+			path = ../../../addons/ofxGlobalContext;
+			sourceTree = "<group>";
+		};
+		547882752039EA2C00E92221 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				547882762039EA2C00E92221 /* ofxGlobalContext.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		548B16E220270054004AB928 /* ofxGui */ = {
 			isa = PBXGroup;
 			children = (
@@ -308,6 +394,8 @@
 		BB16F26B0F2B646B00518274 /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				547882602039EA2C00E92221 /* ofxAnimationPrimitives */,
+				547882742039EA2C00E92221 /* ofxGlobalContext */,
 				548B16E220270054004AB928 /* ofxGui */,
 				2152D16385B8F9DE337E943B /* ofxARKit */,
 			);
@@ -351,6 +439,9 @@
 				54051B062015019700520556 /* delegates */,
 				54051B092015019700520556 /* main.mm */,
 				54051B0B2015019700520556 /* viewcontrollers */,
+				5476B50E203986CE0057CE88 /* CaptureDrawer.h */,
+				5476B50F2039897A0057CE88 /* Config.h */,
+				5476B51020398B220057CE88 /* Context.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -475,6 +566,7 @@
 				548B16FB20270055004AB928 /* ofxSliderGroup.cpp in Sources */,
 				548B16F720270055004AB928 /* ofxGuiGroup.cpp in Sources */,
 				548B16FC20270055004AB928 /* ofxToggle.cpp in Sources */,
+				547882772039EA2C00E92221 /* Timer.cpp in Sources */,
 				54051B112015019700520556 /* main.mm in Sources */,
 				548B16F620270055004AB928 /* ofxButton.cpp in Sources */,
 			);

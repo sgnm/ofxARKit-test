@@ -18,16 +18,10 @@ void logSIMD(const simd::float4x4 &matrix)
 
 //--------------------------------------------------------------
 ofApp :: ofApp (ARSession * session){
-    //呼ばれない
-    this->session = session;
     cout << "creating ofApp(ARSession * session)" << endl;
 }
 
 ofApp::ofApp(){
-    //SFormatに設定を書き込んで、新しくsessionを始めるみたいな
-    ARCore::SFormat format;
-    format.enableLighting();
-    this->session = ARCore::generateNewSession(format);
     cout << "creating ofApp()" << endl;
 }
 
@@ -40,16 +34,10 @@ ofApp :: ~ofApp () {
 void ofApp::setup() {
     ofBackground(127);
     
-    img.load("OpenFrameworks.png");
-    
     int fontSize = 8;
-    if (ofxiOSGetOFWindow()->isRetinaSupportedOnDevice())
-        fontSize *= 2;
+    if (ofxiOSGetOFWindow()->isRetinaSupportedOnDevice()) fontSize *= 2;
     
     font.load("fonts/mono0755.ttf", fontSize);
-    
-    processor = ARProcessor::create(this->session);
-    processor->setup();
     
     //sound
     initialBufferSize = 512;
@@ -60,27 +48,21 @@ void ofApp::setup() {
     buffer = new float[initialBufferSize];
     memset(buffer, 0, initialBufferSize * sizeof(float));
     
-    // 0 output channels,
-    // 1 input channels
-    // 44100 samples per second
-    // 512 samples per buffer
-    // 1 buffer
     ofSoundStreamSetup(0, 1, this, sampleRate, initialBufferSize, 1);
     
+    captureDrawer.setup();
     
-#ifdef TARGET_OPENGLES
-    shader.load("shaders/normal");
-#else
-    ofLogError("Set target to OpenGLES!");
-#endif
+    //init context
+    ofxGlobalContext::Manager::defaultManager().createContext<Property>();
+    ofxGlobalContext::Manager::defaultManager().createContext<AR>();
 }
 
 
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    
-    processor->update();
+    $Context(AR)->processor->update();
+    ofxGlobalContext::Manager::defaultManager().update();
 }
 
 //--------------------------------------------------------------
@@ -88,13 +70,13 @@ void ofApp::draw() {
     ofEnableAlphaBlending();
     
     ofDisableDepthTest();
-    processor->draw();
+    $Context(AR)->processor->draw();
     ofEnableDepthTest();
     
-    processor->anchorController->loopAnchors([=](ARObject obj, int index)->void {
+    $Context(AR)->processor->anchorController->loopAnchors([=](ARObject obj, int index)->void {
         
-        camera.begin();
-        processor->setARCameraMatrices();
+        $Context(AR)->camera.begin();
+        $Context(AR)->processor->setARCameraMatrices();
         
         ofPushMatrix();
         ofMultMatrix(obj.modelMatrix);
@@ -102,62 +84,13 @@ void ofApp::draw() {
         ofSetColor(255);
         ofRotate(90,0,0,1);
         
-        aspect = ARCommon::getNativeAspectRatio();
+        $Context(Property)->aspect = ARCommon::getNativeAspectRatio();
         
-        //一定以上の音量だったら別loadする。
-        if(isPostEffect)
-        {
-            if(smoothedVol > 0.02)
-            {
-                static int i = 0;
-                while (shaderIndex == i)
-                {
-                    i = ofRandom(5);
-                }
-                switch(i)
-                {
-                    case 1:
-                        shader.load("shaders/mono");
-                        break;
-                    case 2:
-                        shader.load("shaders/invert");
-                            break;
-                    case 3:
-                        shader.load("shaders/convergence");
-                        break;
-                    case 4:
-                        shader.load("shaders/cut_slider");
-                        break;
-                    case 5:
-                        shader.load("shaders/outline");
-                        break;
-                    case 0:
-                        shader.load("shaders/normal");
-                        break;
-                }
-                
-                shaderIndex = i;
-            }
-        }
-        else
-        {
-            shader.load("shaders/normal");
-        }
-    
-        shader.begin();
-        {
-            //TODO: stepじゃなくてOSC&押しっぱなしとかにする。effect trueにしといて音に反応してエフェクトかかるみたいな？
-            shader.setUniform1f("rand", ofRandom(1));
-            shader.setUniform2f("resolution", WIDTH, HEIGHT);
-            shader.setUniformTexture("texture", fbos[index].getTexture(), 0);
-            
-            fbos[index].draw(ofPoint(-aspect/8, -0.125), aspect/4, 0.25);
-        }
-        shader.end();
+        captureDrawer.draw(index);
         
         ofPopMatrix();
         
-        camera.end();
+        $Context(AR)->camera.end();
         
     });
     
@@ -199,6 +132,7 @@ void ofApp::audioIn(float * input, int bufferSize, int nChannels){
     
     smoothedVol *= 0.93;
     smoothedVol += 0.07 * curVol;
+    $Context(Property)->volume = smoothedVol;
     
     cout << "vol: " << smoothedVol << endl;
     
@@ -208,28 +142,17 @@ void ofApp::audioIn(float * input, int bufferSize, int nChannels){
 
 //--------------------------------------------------------------
 void ofApp::touchDown(ofTouchEventArgs &touch){
-    cout << "num: " << processor->getNumAnchors() << endl;
-    if(processor->getNumAnchors() > MAX_NUM_ANCHORS)
+    cout << "num: " << $Context(AR)->processor->getNumAnchors() << endl;
+    if($Context(AR)->processor->getNumAnchors() > Config::AR::MAX_NUM_ANCHORS)
     {
         //TODO: 削除はできたけど90超えるとなぜかアプリ落ちるっぽい？、、
         //一定数超えたらアンカー削除
-        processor->removeAnchor(0);
+        $Context(AR)->processor->removeAnchor(0);
     }
     
-//    processor->addAnchor(ofVec3f(touch.x,touch.y,-0.2)); //xy座標指定してアンカー追加, draw側も合わせる必要がある. WIPっぽいので使わない.
-    processor->addAnchor(-0.2);
+    $Context(AR)->processor->addAnchor(-0.2);
     
-    // fboがローカル変数じゃないとうまくいかない。おそらくメンバー変数だと参照を保持しているので全部変わってしまうみたいな
-    ofFbo fbo;
-    fbo.allocate(WIDTH, HEIGHT, GL_RGBA);
-    fbo.begin();
-    {
-        //w: 640 /h: 1136
-        processor->getFBO().draw(0, 0, WIDTH, HEIGHT);
-    }
-    fbo.end();
-    
-    fbos.emplace_back(fbo);
+    captureDrawer.addCapturedFbo($Context(AR)->processor->getFBO());
 }
 
 //--------------------------------------------------------------
@@ -264,8 +187,8 @@ void ofApp::gotMemoryWarning(){
 
 //--------------------------------------------------------------
 void ofApp::deviceOrientationChanged(int newOrientation){
-    processor->updateDeviceInterfaceOrientation();
-    processor->deviceOrientationChanged();
+    $Context(AR)->processor->updateDeviceInterfaceOrientation();
+    $Context(AR)->processor->deviceOrientationChanged();
     
 }
 

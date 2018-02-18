@@ -3,19 +3,17 @@
 #include "ofxiOS.h"
 #include <ARKit/ARKit.h>
 #include "ofxARKit.h"
-
-//w: 640 /h: 1136
-const float WIDTH = 640.0;
-const float HEIGHT = 1136.0;
-const int MAX_NUM_ANCHORS = 90;
+#include "Context.h"
+#include "Config.h"
+#include "CaptureDrawer.h"
 
 class ofApp : public ofxiOSApp {
     
 public:
     
-    ofApp (ARSession * session);
+    ofApp(ARSession * session);
     ofApp();
-    ~ofApp ();
+    ~ofApp();
     
     void setup();
     void update();
@@ -33,23 +31,9 @@ public:
     void gotMemoryWarning();
     void deviceOrientationChanged(int newOrientation);
     
-    vector < matrix_float4x4 > mats;
-    vector<ARAnchor*> anchors;
-    ofCamera camera;
     ofTrueTypeFont font;
-    ofImage img;
     
-    // ====== AR STUFF ======== //
-    ARSession * session;
-    ARRef processor; //ARProcessorの参照
-    
-    // custom by sgnm
-    vector<ofFbo> fbos;
-    float aspect;
-    
-    //shader
-    ofShader shader;
-    vector<ofShader> shaders;
+    CaptureDrawer captureDrawer;
     
     //audio
     void audioIn(float * input, int bufferSize, int nChannels);
@@ -62,9 +46,6 @@ public:
     
     float smoothedVol;
     float scaledVol;
-    
-    int shaderIndex = 0;
-    bool isPostEffect = true;
 };
 
 
