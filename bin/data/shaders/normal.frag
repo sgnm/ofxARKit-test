@@ -19,5 +19,5 @@ void main()
 	// float b = 1.0;
 	// float a = 1.0;
     vec4 tex = texture2D(texture, texCoordVarying);
-	gl_FragColor = vec4(1.0 - tex.r, 1.0 - tex.g, 1.0 - tex.b, 1.0);
+	gl_FragColor = tex;
 }
