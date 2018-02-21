@@ -32,7 +32,12 @@ ofApp :: ~ofApp () {
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-    ofBackground(127);
+    //init context
+    ofxGlobalContext::Manager::defaultManager().createContext<Property>();
+    ofxGlobalContext::Manager::defaultManager().createContext<AR>();
+    
+    ofSetCircleResolution(60);
+    ofBackground(0);
     
     int fontSize = 8;
     if (ofxiOSGetOFWindow()->isRetinaSupportedOnDevice()) fontSize *= 2;
@@ -52,9 +57,6 @@ void ofApp::setup() {
     
     captureDrawer.setup();
     
-    //init context
-    ofxGlobalContext::Manager::defaultManager().createContext<Property>();
-    ofxGlobalContext::Manager::defaultManager().createContext<AR>();
 }
 
 
@@ -63,6 +65,7 @@ void ofApp::setup() {
 void ofApp::update(){
     $Context(AR)->processor->update();
     ofxGlobalContext::Manager::defaultManager().update();
+    manager.update();
 }
 
 //--------------------------------------------------------------
@@ -73,26 +76,7 @@ void ofApp::draw() {
     $Context(AR)->processor->draw();
     ofEnableDepthTest();
     
-    $Context(AR)->processor->anchorController->loopAnchors([=](ARObject obj, int index)->void {
-        
-        $Context(AR)->camera.begin();
-        $Context(AR)->processor->setARCameraMatrices();
-        
-        ofPushMatrix();
-        ofMultMatrix(obj.modelMatrix);
-        
-        ofSetColor(255);
-        ofRotate(90,0,0,1);
-        
-        $Context(Property)->aspect = ARCommon::getNativeAspectRatio();
-        
-        captureDrawer.draw(index);
-        
-        ofPopMatrix();
-        
-        $Context(AR)->camera.end();
-        
-    });
+    manager.draw();
     
     ofDisableDepthTest();
     // ========== DEBUG STUFF ============= //
@@ -132,7 +116,7 @@ void ofApp::audioIn(float * input, int bufferSize, int nChannels){
     
     smoothedVol *= 0.93;
     smoothedVol += 0.07 * curVol;
-    $Context(Property)->volume = smoothedVol;
+    $Context(Property)->volume = smoothedVol; //Property contextが初期化された状態で呼ばれないと落ちる
     
     cout << "vol: " << smoothedVol << endl;
     
@@ -152,7 +136,10 @@ void ofApp::touchDown(ofTouchEventArgs &touch){
     
     $Context(AR)->processor->addAnchor(-0.2);
     
-    captureDrawer.addCapturedFbo($Context(AR)->processor->getFBO());
+//    captureDrawer.addCapturedFbo($Context(AR)->processor->getFBO());
+    
+    ofMatrix4x4 mat = $Context(AR)->processor->getLastAnchorMatrix();
+    manager.createInstance<LineDrawer>(mat)->play(5);
 }
 
 //--------------------------------------------------------------

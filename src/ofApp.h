@@ -6,6 +6,8 @@
 #include "Context.h"
 #include "Config.h"
 #include "CaptureDrawer.h"
+#include "ofxAnimationPrimitives.h"
+#include "LineDrawer.h"
 
 class ofApp : public ofxiOSApp {
     
@@ -34,6 +36,7 @@ public:
     ofTrueTypeFont font;
     
     CaptureDrawer captureDrawer;
+    ofxAnimationPrimitives::InstanceManager manager;
     
     //audio
     void audioIn(float * input, int bufferSize, int nChannels);

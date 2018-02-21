@@ -17,6 +17,7 @@ enum EffectType
     Outline
 };
 
+//TODO: captureDrawerもinstance化して、初期化でshader, matrix等自由効かせられるようにする
 class CaptureDrawer
 {
     vector<ofFbo> capturedFbos;
