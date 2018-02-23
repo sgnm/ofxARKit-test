@@ -53,10 +53,17 @@ public:
         pos2.z += getInvLife() * 2.0;
         ofDrawLine(pos1, pos2);
         
+        
+//        switch($Context(OSC)->address)
+//        {
+//            case "/Note1":
+//
+//                break;
+//        }
+        
         ofPopMatrix();
         
         $Context(AR)->camera.end();
-        
     }
 private:
     ofMatrix4x4 matrix;

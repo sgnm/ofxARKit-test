@@ -44,3 +44,30 @@ public:
         
     }
 };
+
+#include "ofxOSC.h"
+#include "Config.h"
+
+class OSC : public ofxGlobalContext::Context
+{
+public:
+    ofxOscReceiver receiver;
+    string address;
+    
+    OSC()
+    {
+        receiver.setup(Config::OSC::PORT);
+    }
+    
+    void update()
+    {
+        while(receiver.hasWaitingMessages())
+        {
+            // get the next message
+            ofxOscMessage m;
+            receiver.getNextMessage(m);
+            address = m.getAddress();
+            cout << "address: " << address << endl;
+        }
+    }
+};

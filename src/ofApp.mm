@@ -35,6 +35,7 @@ void ofApp::setup() {
     //init context
     ofxGlobalContext::Manager::defaultManager().createContext<Property>();
     ofxGlobalContext::Manager::defaultManager().createContext<AR>();
+    ofxGlobalContext::Manager::defaultManager().createContext<OSC>();
     
     ofSetCircleResolution(60);
     ofBackground(0);
@@ -81,7 +82,8 @@ void ofApp::draw() {
     ofDisableDepthTest();
     // ========== DEBUG STUFF ============= //
 //    processor->debugInfo.drawDebugInformation(font);
-    
+    //TODO: OSCもらって三角、四角、円柱を書く
+    ofDrawBitmapStringHighlight("add: " + $Context(OSC)->address, 20, 20);
     
 }
 

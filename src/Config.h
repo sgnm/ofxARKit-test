@@ -20,4 +20,9 @@ namespace Config
     {
         const int MAX_NUM_ANCHORS = 90;
     }
+    
+    namespace OSC
+    {
+        const int PORT = 8000;
+    }
 }
