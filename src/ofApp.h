@@ -3,11 +3,13 @@
 #include "ofxiOS.h"
 #include <ARKit/ARKit.h>
 #include "ofxARKit.h"
-#include "Context.h"
 #include "Config.h"
+#include "Context.h"
 #include "CaptureDrawer.h"
 #include "ofxAnimationPrimitives.h"
 #include "LineDrawer.h"
+#include "CircleAnimations.h"
+#include "ofxGui.h"
 
 class ofApp : public ofxiOSApp {
     
@@ -20,8 +22,11 @@ public:
     void setup();
     void update();
     void draw();
+    void drawOscInfo();
     void exit();
     
+    void onPressedCaptureButton();
+    void onPressedAnimateButton();
     void touchDown(ofTouchEventArgs &touch);
     void touchMoved(ofTouchEventArgs &touch);
     void touchUp(ofTouchEventArgs &touch);
@@ -33,22 +38,15 @@ public:
     void gotMemoryWarning();
     void deviceOrientationChanged(int newOrientation);
     
+    //gui
     ofTrueTypeFont font;
+    ofxButton captureButton;
+    ofxButton animateButton;
+    ofxPanel gui;
+    bool isShowGui;
     
     CaptureDrawer captureDrawer;
     ofxAnimationPrimitives::InstanceManager manager;
-    
-    //audio
-    void audioIn(float * input, int bufferSize, int nChannels);
-    
-    int    initialBufferSize;
-    int    sampleRate;
-    int    drawCounter;
-    int bufferCounter;
-    float * buffer;
-    
-    float smoothedVol;
-    float scaledVol;
 };
 
 

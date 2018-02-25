@@ -28,7 +28,7 @@ namespace ARDebugUtils {
         ARSession * session;
     public:
         ARDebugInfo(){}
-        ARDebugInfo(ARSession * session,int x=40,int y=40){
+        ARDebugInfo(ARSession * session,int x=20,int y=40){
             this->session = session;
             this->x = x;
             this->y = y;
@@ -42,11 +42,10 @@ namespace ARDebugUtils {
     
           
             // ============== DRAW GENERAL DEBUG INFO ===================== //
-            font.drawString("frame num      = " + ofToString( ofGetFrameNum() ),    x, y);
-            font.drawString("frame rate     = " + ofToString( ofGetFrameRate() ),   x, y + 25);
-            font.drawString("screen width   = " + ofToString( ofGetWidth() ),       x, y + 50);
-            font.drawString("screen height  = " + ofToString( ofGetHeight() ),      x, y + 75);
-            
+            font.drawString("frame num: " + ofToString( ofGetFrameNum() ),    x, y);
+            font.drawString("frame rate: " + ofToString( ofGetFrameRate() ),   x, y + 25);
+            font.drawString("screen width: " + ofToString( ofGetWidth() ),       x, y + 50);
+            font.drawString("screen height: " + ofToString( ofGetHeight() ),      x, y + 75);
             
             // ============== DRAW TRACKING INFO ===================== //
             switch(trackingStateReason){
