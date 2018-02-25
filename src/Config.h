@@ -25,4 +25,18 @@ namespace Config
     {
         const int PORT = 8000;
     }
+    
+    namespace Graphics
+    {
+        const float SCALE = 0.25;
+        const int LINE_WIDTH = 10;
+        const float SPEED = 1.0;
+        
+        enum FillMode
+        {
+            FILL,
+            NO_FILL,
+            DUMMY_TO_COUNT
+        };
+    }
 }
