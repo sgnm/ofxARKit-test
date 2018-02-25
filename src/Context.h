@@ -53,6 +53,8 @@ class OSC : public ofxGlobalContext::Context
 public:
     ofxOscReceiver receiver;
     string address;
+    int track;
+    int note;
     
     OSC()
     {
@@ -67,7 +69,30 @@ public:
             ofxOscMessage m;
             receiver.getNextMessage(m);
             address = m.getAddress();
-            cout << "address: " << address << endl;
+            track = m.getArgAsInt(0);
+            note = m.getArgAsInt(1);
         }
+    }
+};
+
+class Timer : public ofxGlobalContext::Context
+{
+public:
+    float tick;
+    float elapsed;
+    float rate;
+    
+    Timer()
+    {
+        elapsed = 0;
+        rate = 0;
+    }
+    
+    void update()
+    {
+        float inv_target_frame = (1. / 60);
+        tick = ofGetLastFrameTime();
+        rate = tick / inv_target_frame;
+        elapsed += tick;
     }
 };
