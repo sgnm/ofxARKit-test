@@ -7,8 +7,9 @@
 #include "Context.h"
 #include "CaptureDrawer.h"
 #include "ofxAnimationPrimitives.h"
-#include "LineDrawer.h"
 #include "CircleAnimations.h"
+#include "TriAnimations.h"
+#include "RectAnimations.h"
 #include "ofxGui.h"
 
 class ofApp : public ofxiOSApp {
@@ -22,6 +23,8 @@ public:
     void setup();
     void update();
     void draw();
+    void drawPlanes();
+    void drawAnchors();
     void drawOscInfo();
     void exit();
     

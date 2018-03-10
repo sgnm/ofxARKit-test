@@ -179,6 +179,8 @@
 		5476B50F2039897A0057CE88 /* Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
 		5476B51020398B220057CE88 /* Context.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Context.h; sourceTree = "<group>"; };
 		54C62164203C75BF00D4CE51 /* LineDrawer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LineDrawer.h; sourceTree = "<group>"; };
+		54FAF92F2053B19600DF908D /* TriAnimations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TriAnimations.h; sourceTree = "<group>"; };
+		54FAF9302053BD7B00DF908D /* RectAnimations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RectAnimations.h; sourceTree = "<group>"; };
 		678E130717951530005B6D19 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "bin/data/Icon@2x.png"; sourceTree = "<group>"; };
 		678E130917951536005B6D19 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = bin/data/Icon.png; sourceTree = "<group>"; };
 		678E130B1795153C005B6D19 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = bin/data/Default.png; sourceTree = "<group>"; };
@@ -517,33 +519,11 @@
 		5429BB2120411AFD00922A2A /* clips */ = {
 			isa = PBXGroup;
 			children = (
-				5429BB2220411B9900922A2A /* circle */,
-				5429BB2320411B9900922A2A /* rect */,
-				5429BB2420411B9900922A2A /* tri */,
+				54275AF92041256100B0EB1C /* CircleAnimations.h */,
+				54FAF92F2053B19600DF908D /* TriAnimations.h */,
+				54FAF9302053BD7B00DF908D /* RectAnimations.h */,
 			);
 			path = clips;
-			sourceTree = "<group>";
-		};
-		5429BB2220411B9900922A2A /* circle */ = {
-			isa = PBXGroup;
-			children = (
-				54275AF92041256100B0EB1C /* CircleAnimations.h */,
-			);
-			path = circle;
-			sourceTree = "<group>";
-		};
-		5429BB2320411B9900922A2A /* rect */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = rect;
-			sourceTree = "<group>";
-		};
-		5429BB2420411B9900922A2A /* tri */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = tri;
 			sourceTree = "<group>";
 		};
 		5459C4F1201334E800A57EAD /* Frameworks */ = {
@@ -805,7 +785,7 @@
 				GCC_PREFIX_HEADER = ofxiOS_Prefix.pch;
 				"GCC_WARN_64_TO_32_BIT_CONVERSION[arch=*64]" = NO;
 				INFOPLIST_FILE = "ofxiOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.shimpei.suganuma;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				VALID_ARCHS = "$(ARCHS_STANDARD)";
@@ -820,7 +800,7 @@
 				GCC_PREFIX_HEADER = ofxiOS_Prefix.pch;
 				"GCC_WARN_64_TO_32_BIT_CONVERSION[arch=*64]" = NO;
 				INFOPLIST_FILE = "ofxiOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.shimpei.suganuma;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				VALID_ARCHS = "$(ARCHS_STANDARD)";

@@ -11,6 +11,7 @@
 
 using namespace ofx::AnimationPrimitives::Easing;
 
+//TODO: そもそも演出用に垂線がいるかどうか
 class LineDrawer : public ofxAnimationPrimitives::Instance
 {
 public:
@@ -33,9 +34,6 @@ public:
     
     void draw()
     {
-        $Context(AR)->camera.begin();
-        $Context(AR)->processor->setARCameraMatrices();
-        
         ofPushMatrix();
         ofMultMatrix(matrix);
         
@@ -43,15 +41,6 @@ public:
         ofRotate(90,0,0,1);
         
         $Context(Property)->aspect = ARCommon::getNativeAspectRatio();
-        
-        ofSetColor(255, 255.0);
-        ofDrawCircle(0, 0, -1.0 + Quart::easeOut(getLife()), 0.1 * Quart::easeOut(getLife()));
-        //getLife: 1 -> 0, out: -0.0 -> -1.0
-        
-        //TODO: vboMeshにしてcircleとかもその点に描けるようにする
-        static ofPoint pos1(0, 0, -0.2), pos2(0, 0, -0.2);
-        pos2.z += getInvLife() * 2.0;
-        ofDrawLine(pos1, pos2);
         
         
 //        switch($Context(OSC)->address)
@@ -62,8 +51,6 @@ public:
 //        }
         
         ofPopMatrix();
-        
-        $Context(AR)->camera.end();
     }
 private:
     ofMatrix4x4 matrix;

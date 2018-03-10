@@ -82,31 +82,25 @@ void ofApp::update(){
     }
 }
 
+#pragma mark - draw
 //--------------------------------------------------------------
 void ofApp::draw() {
     $Context(AR)->processor->draw();
     ofEnableDepthTest();
     
-    //instance継承したそれぞれのクラスで色々描画する。
-    //そんでそのinstanceを出したり削除したりするためのクラスを作って、そこでMIDI note分岐してアニメーションさせるみたいな？
-    //なので、createInstance時にアニメーションできるようにする！！
-    if($Context(AR)->processor->getNumAnchors() > 0)
+    $Context(AR)->camera.begin();
+    $Context(AR)->processor->setARCameraMatrices();
+    
     {
-        $Context(AR)->camera.begin();
-        $Context(AR)->processor->setARCameraMatrices();
-
-        ofPushMatrix();
-        ofMultMatrix($Context(AR)->processor->getLastAnchorMatrix());
-        ofRotate(90,0,0,1);
+        // === draw somthing stuff ===
+        //平面表示する。平面のpositionをofTranslateで原点にして、
+        //そこでrotate 180とかすればいけたりするかも？
         
-        ofTranslate(0, 0, $Context(Timer)->elapsed * Config::Graphics::SPEED);
-        {
-            manager.draw();
-        }
-        ofPopMatrix();
+        drawAnchors();
         
-        $Context(AR)->camera.end();
+        // === draw somthing stuff ===
     }
+    $Context(AR)->camera.end();
     
     ofDisableDepthTest();
     // ========== DEBUG STUFF ============= //
@@ -117,6 +111,7 @@ void ofApp::draw() {
         {
             $Context(AR)->camera.begin();
             $Context(AR)->processor->setARCameraMatrices();
+            ofDrawAxis(10);
             ofPushMatrix();
             ofMultMatrix($Context(AR)->processor->getLastAnchorMatrix());
             ofRotate(90,0,0,1);
@@ -130,6 +125,78 @@ void ofApp::draw() {
     }
 }
 
+void ofApp::drawPlanes()
+{
+    if($Context(AR)->processor->getNumPlanes() > 0)
+    {
+        PlaneAnchorObject plane = $Context(AR)->processor->getLastHorizontalPlane();
+        
+        ofPushMatrix();
+        ofMultMatrix($Context(AR)->processor->getLastPlaneMatrix());
+        ofFill();
+        ofSetColor(102,216,254,100);
+        ofRotateX(90);
+        ofTranslate(plane.position.x, plane.position.y);
+        {
+            ofDrawRectangle(-plane.position.x/2, -plane.position.z/2, 0, plane.width, plane.height);
+        }
+        ofSetColor(255);
+        ofPopMatrix();
+    }
+}
+
+void ofApp::drawAnchors()
+{
+    if($Context(AR)->processor->getNumAnchors() > 0)
+    {
+        //===============================
+        //元
+        ofPushMatrix();
+        ofMultMatrix($Context(AR)->processor->getLastAnchorMatrix());
+        ofRotate(90,0,0,1); //z軸に90度回転
+        
+        ofTranslate(0, 0, $Context(Timer)->elapsed * Config::Graphics::SPEED);
+        {
+            ofSetColor(255, 255);
+            manager.draw();
+        }
+        ofPopMatrix();
+        //===============================
+        
+        //===============================
+        //鏡、コピー y軸反転させる。具体的には、y軸を-させて〜みたいな
+        //基本的にmatrix取得して、値変えてからセットする感じ！、、unityみたいな
+        ofPushMatrix();
+//        ofMultMatrix($Context(AR)->processor->getLastAnchorMatrix());
+        ofMatrix4x4 mat = $Context(AR)->processor->getLastAnchorMatrix();
+        
+        //translation
+        ofVec3f tl = mat.getTranslation();
+        tl.y *= -1.0;
+        mat.setTranslation(tl);
+        
+        //rotation
+        // TODO: コピーのやつに、rotation（向きとか）を後で反映させる
+        ofQuaternion qt = mat.getRotate();
+//        qt.makeRotate(180, 0, 0, 1);
+//        qt.makeRotate(180, 0, 0, 1);
+        qt.inverse();
+        mat.setRotate(qt);
+        
+        ofMultMatrix(mat);
+        ofRotate(90,0,0,1); //z軸に90度回転
+        
+        ofTranslate(0, 0, $Context(Timer)->elapsed * Config::Graphics::SPEED);
+        {
+            ofSetColor(255, 150);
+            manager.draw();
+        }
+        
+        ofPopMatrix();
+        //===============================
+    }
+}
+
 void ofApp::drawOscInfo()
 {
     int x = 20; int y = 40;
@@ -138,6 +205,7 @@ void ofApp::drawOscInfo()
     font.drawString("note: " + ofToString($Context(OSC)->note), x, y + 175);
     font.drawString("time: " + ofToString($Context(Timer)->elapsed), x, y + 200);
     font.drawString("anchors num: " + ofToString($Context(AR)->processor->getNumAnchors()), x, y + 225);
+    font.drawString("planes num: " + ofToString($Context(AR)->processor->getNumPlanes()), x, y + 250);
 }
 
 //--------------------------------------------------------------
@@ -161,7 +229,7 @@ void ofApp::onPressedCaptureButton()
 void ofApp::onPressedAnimateButton()
 {
     FillMode fillMode = static_cast<FillMode>(rand() % DUMMY_TO_COUNT);
-    int randIndex = ofRandom(3);
+    int randIndex = ofRandom(9);
     switch (randIndex) {
         case 0:
             manager.createInstance<Circle::Anim1>(fillMode)->play(0.5);
@@ -171,6 +239,24 @@ void ofApp::onPressedAnimateButton()
             break;
         case 2:
             manager.createInstance<Circle::Smaller>(fillMode)->play(0.5);
+            break;
+        case 3:
+            manager.createInstance<Tri::Bigger>(fillMode)->play(0.5);
+            break;
+        case 4:
+            manager.createInstance<Tri::Line>()->play(0.5);
+            break;
+        case 5:
+            manager.createInstance<Tri::Rotate>(fillMode)->play(0.5);
+            break;
+        case 6:
+            manager.createInstance<Rectangle::Bigger>(fillMode)->play(0.5);
+            break;
+        case 7:
+            manager.createInstance<Rectangle::Line>()->play(0.5);
+            break;
+        case 8:
+            manager.createInstance<Rectangle::Rotate>(fillMode)->play(0.5);
             break;
             
         default:
