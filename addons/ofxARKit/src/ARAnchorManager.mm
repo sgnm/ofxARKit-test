@@ -22,12 +22,59 @@ namespace ARCore {
         this->session = session;
     }
     
+#pragma mark - get
+    std::vector<PlaneAnchorObject> ARAnchorManager::getPlaneAnchors()
+    {
+        return planes;
+    }
+    
+    int ARAnchorManager::getNumAnchors()
+    {
+        return anchors.size();
+    }
+    
     int ARAnchorManager::getNumPlanes(){
         return planes.size();
     }
     
     PlaneAnchorObject ARAnchorManager::getPlaneAt(int index){
         return planes.at(index);
+    }
+    
+    PlaneAnchorObject ARAnchorManager::getLastPlane()
+    {
+        PlaneAnchorObject plane;
+        if(!planes.empty())
+        {
+            plane = getPlaneAt(planes.size() - 1);
+            return plane;
+        }
+        else
+        {
+            ofLogError("Plane is null! check the planes array");
+        }
+        
+        return plane;
+    }
+    
+    ofMatrix4x4 ARAnchorManager::getPlaneMatrix(int index)
+    {
+        return planes[index].transform;
+    }
+    
+    ofMatrix4x4 ARAnchorManager::getLastPlaneMatrix()
+    {
+        ofMatrix4x4 mat;
+        if(!planes.empty())
+        {
+            mat = getPlaneMatrix(planes.size() - 1);
+        }
+        else
+        {
+            ofLogError("Matrix is null! check the planes array");
+        }
+        
+        return mat;
     }
     
     void ARAnchorManager::addAnchor(float zZoom){
@@ -362,10 +409,13 @@ namespace ARCore {
     void ARAnchorManager::drawPlanes(ARCameraMatrices cameraMatrices){
         camera.begin();
         
+        // === ARCam::setARCameraMatrices ===
+        // 上関数と同じ処理
         ofSetMatrixMode(OF_MATRIX_PROJECTION);
         ofLoadMatrix(cameraMatrices.cameraProjection);
         ofSetMatrixMode(OF_MATRIX_MODELVIEW);
         ofLoadMatrix(cameraMatrices.cameraView);
+        // === ARCam::setARCameraMatrices ===
         
         for(int i = 0; i < getNumPlanes(); ++i){
             PlaneAnchorObject anchor = getPlaneAt(i);
@@ -421,6 +471,11 @@ namespace ARCore {
 //                mat = ARCommon::convert<matrix_float4x4, ofMatrix4x4>(anchor.transform);
 //        return getAnchorMatrix(session.currentFrame.anchors.count - 1);;
 //        }
+    }
+    
+    void ARAnchorManager::togglePlaneUpate()
+    {
+        shouldUpdatePlanes = !shouldUpdatePlanes;
     }
     
 

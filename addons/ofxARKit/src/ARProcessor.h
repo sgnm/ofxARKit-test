@@ -110,9 +110,15 @@ public:
     //======== PLANE API ============ //
 
     //! Returns the current set of horizontal planes.
-    std::vector<PlaneAnchorObject> getHorizontalPlanes(){
-        return anchorController->getPlaneAnchors();
-    }
+    std::vector<PlaneAnchorObject> getHorizontalPlanes();
+    
+    PlaneAnchorObject getLastHorizontalPlane();
+    
+    ofMatrix4x4 getPlaneMatrix(int index);
+    ofMatrix4x4 getLastPlaneMatrix();
+    
+    //検出してる平面の数を返す
+    int getNumPlanes();
     
     //! Draws the current set of horizontal planes
     void drawHorizontalPlanes();

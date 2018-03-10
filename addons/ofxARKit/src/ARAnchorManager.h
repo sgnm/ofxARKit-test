@@ -78,14 +78,10 @@ namespace ARCore {
         void setNumberOfPlanesToTrack(int num=0);
         
         //! Returns the vector of currently found planes
-        std::vector<PlaneAnchorObject> getPlaneAnchors(){
-            return planes;
-        }
+        std::vector<PlaneAnchorObject> getPlaneAnchors();
         
         //! Returns the current number of anchors.
-        int getNumAnchors(){
-            return anchors.size();
-        }
+        int getNumAnchors();
         
         //! Allows you to loop through the anchors and do something
         //! with each anchor. Pass in a lambda function
@@ -106,10 +102,16 @@ namespace ARCore {
         //! Returns the PlaneAnchorObject associated with found planes
         PlaneAnchorObject getPlaneAt(int index=0);
         
+        PlaneAnchorObject getLastPlane();
+        
+        // get plane matrix by index
+        ofMatrix4x4 getPlaneMatrix(int index);
+        
+        // get last plane matrix
+        ofMatrix4x4 getLastPlaneMatrix();
+        
         //! Toggles whether or not planes should be updated at each iteration.
-        void togglePlaneUpate(){
-            shouldUpdatePlanes = !shouldUpdatePlanes;
-        }
+        void togglePlaneUpate();
         
         //! same as above but removes the anchor directly from the ARSession instance.
         //! Note that it does not remove a corresponding ARObject though, but simply removes

@@ -22,15 +22,12 @@ class Anim1 : public ofxAnimationPrimitives::Instance
 public:
     Anim1(FillMode fillMode = FILL)
     {
-//        matrix_ = $Context(AR)->processor->getLastAnchorMatrix();
-//        fillMode_ = fillMode;
-//        ofSetLineWidth(LINE_WIDTH);
         ring.setup();
     }
     
     void draw()
     {
-        ofSetColor(255, getLife() * 255);
+//        ofSetColor(255, getLife() * 255);
         
         float outRad = ofClamp(SCALE + Back::easeIn(getInvLife()) * -1.0, SCALE, 0.3);
         float inRad = ofClamp(0.2 + SCALE * Quart::easeIn(getInvLife()), 0.0, SCALE);
@@ -41,8 +38,6 @@ public:
     }
     
 private:
-//    FillMode fillMode_;
-//    ofMatrix4x4 matrix_;
     ofxRing ring;
 };
     
@@ -64,7 +59,7 @@ public:
 //        ofRotate(90,0,0,1);
         // === draw begin ===
         
-        ofSetColor(255, getLife() * 255);
+//        ofSetColor(255, getLife() * 255);
         //TODO: global depth
         switch(fillMode_)
         {
@@ -99,7 +94,7 @@ public:
     void draw()
     {
         
-        ofSetColor(255, getLife() * 255);
+//        ofSetColor(255, getLife() * 255);
         //TODO: global depth
         switch(fillMode_)
         {

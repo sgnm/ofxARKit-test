@@ -9,6 +9,7 @@
 using namespace ARCommon;
 using namespace ARCore;
 
+#pragma mark - init
 ARProcessor::ARProcessor(ARSession * session){
     this->session = session;
     
@@ -24,6 +25,7 @@ ARProcessor::~ARProcessor(){
     anchorController.reset();
 }
 
+#pragma mark - debug API
 void ARProcessor::toggleDebug(){
     debugMode = !debugMode;
 }
@@ -42,6 +44,7 @@ void ARProcessor::restartSession(){
     [session runWithConfiguration:session.configuration];
 }
 
+#pragma mark - basic API
 void ARProcessor::setup(bool debugMode){
     this->debugMode = debugMode;
     anchorController = ARAnchorManager::create(session);
@@ -71,6 +74,8 @@ void ARProcessor::updatePlanes(){
 void ARProcessor::drawFrame(){
     draw();
 }
+
+#pragma mark - camera API
 // =========== CAMERA API ============ //
 void ARProcessor::forceInterfaceOrientation(UIInterfaceOrientation orientation){
     camera->setInterfaceOrientation(orientation);
@@ -116,6 +121,7 @@ void ARProcessor::deviceOrientationChanged(){
     camera->updateDeviceOrientation();
 }
 
+#pragma mark - anchor API
 // ======= ANCHOR API ========= //
 void ARProcessor::addAnchor(float zZoom){
     anchorController->addAnchor(zZoom);
@@ -148,10 +154,6 @@ int ARProcessor::getNumAnchors()
     return anchorController->getNumAnchors();
 }
 
-void ARProcessor::drawHorizontalPlanes(){
-    anchorController->drawPlanes(camera->getCameraMatrices());
-}
-
 ofMatrix4x4 ARProcessor::getAnchorMatrix(int index)
 {
     return anchorController->getAnchorMatrix(index);
@@ -162,13 +164,44 @@ ofMatrix4x4 ARProcessor::getLastAnchorMatrix()
     return anchorController->getLastAnchorMatrix();
 }
 
+#pragma mark - plane API
+int ARProcessor::getNumPlanes()
+{
+    return anchorController->getNumPlanes();
+}
+
+std::vector<PlaneAnchorObject> ARProcessor::getHorizontalPlanes()
+{
+    return anchorController->getPlaneAnchors();
+}
+
+PlaneAnchorObject ARProcessor::getLastHorizontalPlane()
+{
+    return anchorController->getLastPlane();
+}
+
+ofMatrix4x4 ARProcessor::getPlaneMatrix(int index)
+{
+    return anchorController->getPlaneMatrix(index);
+}
+
+ofMatrix4x4 ARProcessor::getLastPlaneMatrix()
+{
+    return anchorController->getLastPlaneMatrix();
+}
+
+void ARProcessor::drawHorizontalPlanes(){
+    anchorController->drawPlanes(camera->getCameraMatrices());
+}
+
+#pragma mark - face API
 // ======= FACE API ========= //
 void ARProcessor::updateFaces(){
     anchorController->updateFaces();
 }
 
+#pragma mark - debug API
 // ======== DEBUG API =========== //
-
 void ARProcessor::drawPointCloud(){
     if(debugMode){
         pointCloud.draw(camera->getProjectionMatrix(), camera->getViewMatrix());
