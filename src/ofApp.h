@@ -5,8 +5,8 @@
 #include "ofxARKit.h"
 #include "Config.h"
 #include "Context.h"
-#include "CaptureDrawer.h"
 #include "ofxAnimationPrimitives.h"
+#include "CaptureDrawer.h"
 #include "CircleAnimations.h"
 #include "TriAnimations.h"
 #include "RectAnimations.h"
@@ -15,21 +15,19 @@
 class ofApp : public ofxiOSApp {
     
 public:
-    
-    ofApp(ARSession * session);
-    ofApp();
-    ~ofApp();
-    
     void setup();
+    void setupGui();
     void update();
     void draw();
-    void drawPlanes();
-    void drawAnchors();
     void drawOscInfo();
+    void drawDebugInfo();
+    void drawGeometricGraphics();
+    void drawCaptures();
     void exit();
     
     void onPressedCaptureButton();
     void onPressedAnimateButton();
+    void onPressedModeGeometricToggle(bool &e);
     void touchDown(ofTouchEventArgs &touch);
     void touchMoved(ofTouchEventArgs &touch);
     void touchUp(ofTouchEventArgs &touch);
@@ -45,10 +43,11 @@ public:
     ofTrueTypeFont font;
     ofxButton captureButton;
     ofxButton animateButton;
+    ofxToggle isModeGeometric;
     ofxPanel gui;
     bool isShowGui;
     
-    CaptureDrawer captureDrawer;
+    //clip manager
     ofxAnimationPrimitives::InstanceManager manager;
 };
 
