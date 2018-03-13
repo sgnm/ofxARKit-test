@@ -27,6 +27,8 @@ public:
     
     void onPressedCaptureButton();
     void onPressedAnimateButton();
+    void onPressedClearAnchorsButton();
+    void onPressedClearInstancesButton();
     void onPressedModeGeometricToggle(bool &e);
     void touchDown(ofTouchEventArgs &touch);
     void touchMoved(ofTouchEventArgs &touch);
@@ -43,6 +45,8 @@ public:
     ofTrueTypeFont font;
     ofxButton captureButton;
     ofxButton animateButton;
+    ofxButton clearAnchorsButton;
+    ofxButton clearInstancesButton;
     ofxToggle isModeGeometric;
     ofxPanel gui;
     bool isShowGui;

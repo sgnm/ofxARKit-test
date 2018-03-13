@@ -28,6 +28,8 @@ void ofApp::setupGui()
     font.load("fonts/mono0755.ttf", fontSize);
     captureButton.addListener(this, &ofApp::onPressedCaptureButton);
     animateButton.addListener(this, &ofApp::onPressedAnimateButton);
+    clearAnchorsButton.addListener(this, &ofApp::onPressedClearAnchorsButton);
+    clearInstancesButton.addListener(this, &ofApp::onPressedClearInstancesButton);
     isModeGeometric.addListener(this, &ofApp::onPressedModeGeometricToggle);
     isShowGui = true;
     ofxGuiSetFont("fonts/mono0755.ttf",14,true,true);
@@ -38,6 +40,8 @@ void ofApp::setupGui()
     gui.setPosition(Config::Window::WIDTH/4 * 3 - 20, 20);
     gui.add(captureButton.setup("capture"));
     gui.add(animateButton.setup("animate"));
+    gui.add(clearAnchorsButton.setup("C anchors"));
+    gui.add(clearInstancesButton.setup("C instances"));
     gui.add(isModeGeometric.setup("geo mode", false));
 }
 
@@ -225,26 +229,27 @@ void ofApp::drawDebugInfo()
 {
     if(isShowGui)
     {
+        $Context(AR)->camera.begin();
+        $Context(AR)->processor->setARCameraMatrices();
+        ofDrawAxis(10);
         ofSetColor(ofGetFrameNum() % 255);
         if($Context(AR)->processor->getNumAnchors() > 0)
         {
-            $Context(AR)->camera.begin();
-            $Context(AR)->processor->setARCameraMatrices();
-            ofDrawAxis(10);
             ofPushMatrix();
             ofMultMatrix($Context(AR)->processor->getLastAnchorMatrix());
             ofDrawAxis(10);
             ofRotate(90,0,0,1);
             ofDrawBox(0, 0, 0, 0.01, 0.01, 2.0);
             ofPopMatrix();
-            $Context(AR)->camera.end();
         }
+        $Context(AR)->camera.end();
         $Context(AR)->processor->debugInfo.drawDebugInformation(font);
         drawOscInfo();
         gui.draw();
     }
 }
 
+#pragma mark - events
 //--------------------------------------------------------------
 void ofApp::exit() {
     captureButton.removeListener(this,&ofApp::onPressedCaptureButton);
@@ -317,6 +322,18 @@ void ofApp::onPressedAnimateButton()
     }
     
     $Context(Timer)->elapsed = 0.0;
+}
+
+//--------------------------------------------------------------
+void ofApp::onPressedClearAnchorsButton()
+{
+    $Context(AR)->processor->removeAllAnchors();
+}
+
+//--------------------------------------------------------------
+void ofApp::onPressedClearInstancesButton()
+{
+    manager.clear();
 }
 
 //--------------------------------------------------------------
