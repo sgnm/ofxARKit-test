@@ -178,7 +178,6 @@
 		5476B50E203986CE0057CE88 /* CaptureDrawer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CaptureDrawer.h; sourceTree = "<group>"; };
 		5476B50F2039897A0057CE88 /* Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
 		5476B51020398B220057CE88 /* Context.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Context.h; sourceTree = "<group>"; };
-		54C62164203C75BF00D4CE51 /* LineDrawer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LineDrawer.h; sourceTree = "<group>"; };
 		54FAF92F2053B19600DF908D /* TriAnimations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TriAnimations.h; sourceTree = "<group>"; };
 		54FAF9302053BD7B00DF908D /* RectAnimations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RectAnimations.h; sourceTree = "<group>"; };
 		678E130717951530005B6D19 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "bin/data/Icon@2x.png"; sourceTree = "<group>"; };
@@ -522,6 +521,7 @@
 				54275AF92041256100B0EB1C /* CircleAnimations.h */,
 				54FAF92F2053B19600DF908D /* TriAnimations.h */,
 				54FAF9302053BD7B00DF908D /* RectAnimations.h */,
+				5476B50E203986CE0057CE88 /* CaptureDrawer.h */,
 			);
 			path = clips;
 			sourceTree = "<group>";
@@ -618,10 +618,8 @@
 				54051B062015019700520556 /* delegates */,
 				54051B092015019700520556 /* main.mm */,
 				54051B0B2015019700520556 /* viewcontrollers */,
-				5476B50E203986CE0057CE88 /* CaptureDrawer.h */,
 				5476B50F2039897A0057CE88 /* Config.h */,
 				5476B51020398B220057CE88 /* Context.h */,
-				54C62164203C75BF00D4CE51 /* LineDrawer.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;

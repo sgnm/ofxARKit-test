@@ -38,5 +38,11 @@ namespace Config
             NO_FILL,
             DUMMY_TO_COUNT
         };
+        
+        enum DrawMode
+        {
+            GEOMETRIC,
+            CAMERA_CAPTURE
+        };
     }
 }

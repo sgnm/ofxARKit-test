@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "Config.h"
 #include "ofxGlobalContext.h"
 
 class Property : public ofxGlobalContext::Context
@@ -14,6 +15,7 @@ class Property : public ofxGlobalContext::Context
 public:
     float aspect;
     float volume;
+    Config::Graphics::DrawMode drawMode;
     
     Property()
     {
@@ -46,15 +48,14 @@ public:
 };
 
 #include "ofxOSC.h"
-#include "Config.h"
 
 class OSC : public ofxGlobalContext::Context
 {
 public:
     ofxOscReceiver receiver;
-    string address;
-    int track;
-    int note;
+    string address = "";
+    int track = 0;
+    int note = 0;
     
     OSC()
     {

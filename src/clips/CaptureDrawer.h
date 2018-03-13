@@ -18,18 +18,20 @@ enum EffectType
 };
 
 //TODO: captureDrawerもinstance化して、初期化でshader, matrix等自由効かせられるようにする
-class CaptureDrawer
+class CaptureDrawer : public ofxAnimationPrimitives::Instance
 {
     vector<ofFbo> capturedFbos;
     ofShader shader;
     bool isPostEffect = true;
     float volumeThreshold = 0.02;
     EffectType effectType_;
+    ofMatrix4x4 matrix_;
     
 public:
     
-    void setup()
+    CaptureDrawer()
     {
+        matrix_ = $Context(AR)->processor->getLastAnchorMatrix();
 #ifdef TARGET_OPENGLES
         shader.load("shaders/normal");
 #else
