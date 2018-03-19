@@ -53,6 +53,8 @@ public:
     
     //clip manager
     ofxAnimationPrimitives::InstanceManager manager;
+    float depth;
+    float speed;
 };
 
 

@@ -37,12 +37,12 @@ void ofApp::setupGui()
     ofxGuiSetDefaultWidth(Config::Window::WIDTH/4);
     ofxGuiSetDefaultHeight(54);
     gui.setup();
-    gui.setPosition(Config::Window::WIDTH/4 * 3 - 20, 20);
+    gui.setPosition(Config::Window::WIDTH/4 * 3 - 20, 60);
     gui.add(captureButton.setup("capture"));
     gui.add(animateButton.setup("animate"));
     gui.add(clearAnchorsButton.setup("C anchors"));
     gui.add(clearInstancesButton.setup("C instances"));
-    gui.add(isModeGeometric.setup("geo mode", false));
+    gui.add(isModeGeometric.setup("geo mode", true));
 }
 
 #pragma mark - update
@@ -50,60 +50,40 @@ void ofApp::setupGui()
 void ofApp::update(){
     $Context(AR)->processor->update();
     ofxGlobalContext::Manager::defaultManager().update();
+    
     manager.update();
     
-    cout << "add: " << $Context(OSC)->address << ", track: " << $Context(OSC)->track << ", note: " << $Context(OSC)->note << endl;
+//    cout << "add: " << $Context(OSC)->address << ", track: " << $Context(OSC)->track << ", note: " << $Context(OSC)->note << endl;
     
-    if($Context(OSC)->address == "/bang")
+    if($Context(OSC)->address != "")
     {
+        if($Context(OSC)->address == "/geo")
+        {
+            $Context(Property)->drawMode = GEOMETRIC;
+            onPressedAnimateButton();
+        }
+        
+        if($Context(OSC)->address == "/capture")
+        {
+            $Context(Property)->drawMode = CAMERA_CAPTURE;
+            onPressedCaptureButton();
+        }
+
+        if($Context(OSC)->address == "/effect")
+        {
+            $Context(Property)->drawMode = CAMERA_CAPTURE;
+            onPressedAnimateButton();
+        }
+        
+        if($Context(OSC)->address == "/clear")
+        {
+            $Context(AR)->processor->removeAllAnchors();
+            manager.clear();
+        }
+//        cout << "note: " << $Context(OSC)->note << endl;
         //TODO:
         //図形: track3つに分けて、それぞれに応じたアニメーションを開始する
         //FBO: track4とかに埋め込んで、それでキャプチャーする（
-        
-        FillMode fillMode = static_cast<FillMode>(rand() % DUMMY_TO_COUNT);
-//        manager.createInstance<Circle::Bigger>(fillMode)->play(0.2);
-        manager.createInstance<Circle::Anim1>()->play(0.5);
-        
-        //Z軸リセット
-        //TODO: Z軸ランダムに変えたりできるといい。translateのスピードも
-        $Context(Timer)->elapsed = 0.0;
-        
-        //base
-        if($Context(OSC)->track == 1)
-        {
-            
-        }
-        
-        //drum
-        if($Context(OSC)->track == 2)
-        {
-            
-        }
-        
-        //guitar
-        if($Context(OSC)->track == 3)
-        {
-            
-        }
-        
-        //capture fbo
-        if($Context(OSC)->track == 4)
-        {
-            //TODO: 受け取るnoteに応じて、何分割するかとか決める
-            if($Context(OSC)->note == 49)
-            {
-                
-            }
-            
-            if($Context(OSC)->note == 42)
-            {
-                //TODO: fboキャプチャの場合は、OSCもらってキャプチャするので引数にmatrix渡す！
-                //create instanceする
-                manager.createInstance<CaptureDrawer>($Context(AR)->processor->getFBO())->playInfinity();
-                //            captureDrawer.addCapturedFbo($Context(AR)->processor->getFBO());
-            }
-        }
-        
         
         $Context(OSC)->address = "";
     }
@@ -146,7 +126,7 @@ void ofApp::drawGeometricGraphics()
         ofMultMatrix($Context(AR)->processor->getLastAnchorMatrix());
         ofRotate(90,0,0,1); //z軸に90度回転
         
-        ofTranslate(0, 0, $Context(Timer)->elapsed * Config::Graphics::SPEED);
+        ofTranslate(0, 0, -depth - $Context(Timer)->elapsed * speed);
         {
             ofSetColor(255, 255);
             manager.draw();
@@ -174,7 +154,7 @@ void ofApp::drawGeometricGraphics()
         ofMultMatrix(mat);
         ofRotate(90,0,0,1); //z軸に90度回転
         
-        ofTranslate(0, 0, $Context(Timer)->elapsed * Config::Graphics::SPEED);
+        ofTranslate(0, 0, -depth - $Context(Timer)->elapsed * speed);
         {
             ofSetColor(255, 150);
             manager.draw();
@@ -277,8 +257,16 @@ void ofApp::onPressedAnimateButton()
 {
     if($Context(Property)->drawMode == GEOMETRIC)
     {
+        //z軸をランダムに設定
+        //TODO: ランダムにしてもなんか微妙なので一旦0で、、
+        depth = ofRandom(0.0, 1.0);
+        speed = ofRandom(0.5, 1.5);
+//        depth = 0.0;
+        
+        //エフェクトをランダムに設定
         FillMode fillMode = static_cast<FillMode>(rand() % DUMMY_TO_COUNT);
-        int randIndex = ofRandom(9);
+        int randIndex = ofRandom(13);
+//        int randIndex = 12;
         switch (randIndex) {
             case 0:
                 manager.createInstance<Circle::Anim1>(fillMode)->play(0.5);
@@ -299,13 +287,25 @@ void ofApp::onPressedAnimateButton()
                 manager.createInstance<Tri::Rotate>(fillMode)->play(0.5);
                 break;
             case 6:
-                manager.createInstance<Rectangle::Bigger>(fillMode)->play(0.5);
+                manager.createInstance<Tri::CutOut>()->play(0.5);
                 break;
             case 7:
-                manager.createInstance<Rectangle::Line>()->play(0.5);
+                manager.createInstance<Tri::CutOutRotate>()->play(0.5);
                 break;
             case 8:
+                manager.createInstance<Rectangle::Bigger>(fillMode)->play(0.5);
+                break;
+            case 9:
+                manager.createInstance<Rectangle::Line>()->play(0.5);
+                break;
+            case 10:
                 manager.createInstance<Rectangle::Rotate>(fillMode)->play(0.5);
+                break;
+            case 11:
+                manager.createInstance<Rectangle::CutOut>()->play(0.5);
+                break;
+            case 12:
+                manager.createInstance<Rectangle::CutOutRotate>()->play(0.5);
                 break;
                 
             default:
