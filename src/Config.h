@@ -7,6 +7,8 @@
 
 #pragma once
 
+#define ROUTE3 1.732
+
 namespace Config
 {
     namespace Window

@@ -151,5 +151,82 @@ private:
     ofVec2f points[3];
     float rotation;
 };
+    
+//切り抜かれた図形が描画される
+class CutOut : public ofxAnimationPrimitives::Instance
+{
+public:
+    CutOut()
+    {
+    }
+    
+    ~CutOut()
+    {
+        
+    }
+    
+    void update()
+    {
+        
+    }
+    
+    void draw()
+    {
+        path.clear();
+        path.translate(ofPoint(SCALE/2, SCALE/2)); //中心に移動
+        path.setFillColor(ofColor(255));
+        //大
+        path.rectangle(-SCALE/2, -SCALE/2, SCALE, SCALE);
+        //小
+        path.rectangle(-SCALE/4 - SCALE/4 * Quart::easeIn(getInvLife()), -SCALE/4 - SCALE/4 * Quart::easeIn(getInvLife()), SCALE/2 + SCALE/2 * Quart::easeIn(getInvLife()), SCALE/2 + SCALE/2 * Quart::easeIn(getInvLife()));
+        
+        path.draw();
+//        ofDrawRectangle(0, 0, SCALE * Quart::easeOut(getInvLife()), SCALE * Quart::easeOut(getInvLife()));
+    }
+    
+private:
+    ofPath path;
+};
+    
+//切り抜きしながら回転
+class CutOutRotate : public ofxAnimationPrimitives::Instance
+{
+public:
+    CutOutRotate()
+    {
+        rotation = ofRandom(90, 270);
+    }
+    
+    ~CutOutRotate()
+    {
+        
+    }
+    
+    void update()
+    {
+        
+    }
+    
+    void draw()
+    {
+        path.clear();
+        path.translate(ofPoint(SCALE/2, SCALE/2)); //中心に移動
+        path.setFillColor(ofColor(255));
+        //大
+        path.rectangle(-SCALE/2, -SCALE/2, SCALE, SCALE);
+        //小
+        path.rectangle(-SCALE/4 - SCALE/4 * Quart::easeIn(getInvLife()), -SCALE/4 - SCALE/4 * Quart::easeIn(getInvLife()), SCALE/2 + SCALE/2 * Quart::easeIn(getInvLife()), SCALE/2 + SCALE/2 * Quart::easeIn(getInvLife()));
+        
+        //回転
+        path.rotate(rotation * Quart::easeOut(getInvLife()), ofVec3f(0, 0, 1));
+        
+        path.draw();
+        //        ofDrawRectangle(0, 0, SCALE * Quart::easeOut(getInvLife()), SCALE * Quart::easeOut(getInvLife()));
+    }
+    
+private:
+    ofPath path;
+    float rotation;
+};
 
 }
