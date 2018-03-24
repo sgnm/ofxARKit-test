@@ -43,6 +43,7 @@
 		5429BB1A20409F1700922A2A /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5429BAFE20409F1700922A2A /* Timer.cpp */; };
 		5459C4F3201334E900A57EAD /* ARKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5459C4F2201334E900A57EAD /* ARKit.framework */; };
 		546E9FB92041E9D800470C50 /* ofxRing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 546E9FB72041E9D800470C50 /* ofxRing.cpp */; };
+		54A0EF2B20662E1B00279121 /* ofxFboBlur.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 54A0EF0B20662E1B00279121 /* ofxFboBlur.cpp */; };
 		678E130817951530005B6D19 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 678E130717951530005B6D19 /* Icon@2x.png */; };
 		678E130A17951536005B6D19 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 678E130917951536005B6D19 /* Icon.png */; };
 		678E130C1795153C005B6D19 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 678E130B1795153C005B6D19 /* Default.png */; };
@@ -178,6 +179,9 @@
 		5476B50E203986CE0057CE88 /* CaptureDrawer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CaptureDrawer.h; sourceTree = "<group>"; };
 		5476B50F2039897A0057CE88 /* Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
 		5476B51020398B220057CE88 /* Context.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Context.h; sourceTree = "<group>"; };
+		5492DDB32062AD1500BD70B1 /* Bloom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bloom.h; sourceTree = "<group>"; };
+		54A0EF0B20662E1B00279121 /* ofxFboBlur.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxFboBlur.cpp; sourceTree = "<group>"; };
+		54A0EF0C20662E1B00279121 /* ofxFboBlur.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxFboBlur.h; sourceTree = "<group>"; };
 		54FAF92F2053B19600DF908D /* TriAnimations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TriAnimations.h; sourceTree = "<group>"; };
 		54FAF9302053BD7B00DF908D /* RectAnimations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RectAnimations.h; sourceTree = "<group>"; };
 		678E130717951530005B6D19 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "bin/data/Icon@2x.png"; sourceTree = "<group>"; };
@@ -552,6 +556,24 @@
 			path = src;
 			sourceTree = "<group>";
 		};
+		54A0EEE520662E1B00279121 /* ofxFboBlur */ = {
+			isa = PBXGroup;
+			children = (
+				54A0EF0A20662E1B00279121 /* src */,
+			);
+			name = ofxFboBlur;
+			path = ../../../addons/ofxFboBlur;
+			sourceTree = "<group>";
+		};
+		54A0EF0A20662E1B00279121 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				54A0EF0B20662E1B00279121 /* ofxFboBlur.cpp */,
+				54A0EF0C20662E1B00279121 /* ofxFboBlur.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		6948EE371B920CB800B5AC1A /* local_addons */ = {
 			isa = PBXGroup;
 			children = (
@@ -570,6 +592,7 @@
 		BB16F26B0F2B646B00518274 /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				54A0EEE520662E1B00279121 /* ofxFboBlur */,
 				546E9FB52041E9D800470C50 /* ofxRing */,
 				5429BAED20409F1700922A2A /* ofxAnimationPrimitives */,
 				5429BAB120409F1600922A2A /* ofxARKit */,
@@ -620,6 +643,7 @@
 				54051B0B2015019700520556 /* viewcontrollers */,
 				5476B50F2039897A0057CE88 /* Config.h */,
 				5476B51020398B220057CE88 /* Context.h */,
+				5492DDB32062AD1500BD70B1 /* Bloom.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -735,6 +759,7 @@
 				54051B132015019700520556 /* MyAppViewController.mm in Sources */,
 				54051B142015019700520556 /* OFAppViewController.mm in Sources */,
 				5429BB1520409F1700922A2A /* ofxOscBundle.cpp in Sources */,
+				54A0EF2B20662E1B00279121 /* ofxFboBlur.cpp in Sources */,
 				5429BB1920409F1700922A2A /* ofxOscSender.cpp in Sources */,
 				5429BB0920409F1700922A2A /* ARAnchorManager.mm in Sources */,
 				54051B102015019700520556 /* MyAppDelegate.mm in Sources */,

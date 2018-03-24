@@ -10,6 +10,7 @@
 #include "CircleAnimations.h"
 #include "TriAnimations.h"
 #include "RectAnimations.h"
+#include "ofxFboBlur.h"
 #include "ofxGui.h"
 
 class ofApp : public ofxiOSApp {
@@ -50,11 +51,15 @@ public:
     ofxToggle isModeGeometric;
     ofxPanel gui;
     bool isShowGui;
+    ofxFloatSlider scale;
     
     //clip manager
     ofxAnimationPrimitives::InstanceManager manager;
     float depth;
     float speed;
+    
+    //blur
+    ofxFboBlur gpuBlur;
 };
 
 

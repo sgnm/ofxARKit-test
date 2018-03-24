@@ -15,6 +15,7 @@ class Property : public ofxGlobalContext::Context
 public:
     float aspect;
     float volume;
+    float scale;
     Config::Graphics::DrawMode drawMode;
     
     Property()

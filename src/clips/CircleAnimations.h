@@ -47,7 +47,7 @@ class Bigger : public ofxAnimationPrimitives::Instance
 public:
     Bigger(FillMode fillMode = FILL)
     {
-        matrix_ = $Context(AR)->processor->getLastAnchorMatrix();
+//        matrix_ = $Context(AR)->processor->getLastAnchorMatrix();
         fillMode_ = fillMode;
         ofSetLineWidth(LINE_WIDTH);
     }
@@ -70,7 +70,8 @@ public:
                 ofNoFill();
                 break;
         }
-        ofDrawCircle(0, 0, SCALE * Quart::easeOut(getInvLife()));
+//        ofDrawCircle(0, 0, SCALE * Quart::easeOut(getInvLife()));
+        ofDrawCircle(ofGetWidth()/2, ofGetHeight()/2, $Context(Property)->scale * 50 * Quart::easeOut(getInvLife()));
         
         // === draw end ===
 //        ofPopMatrix();

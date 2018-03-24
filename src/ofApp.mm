@@ -18,6 +18,24 @@ void ofApp::setup() {
     
     //setup gui
     setupGui();
+    
+    //blur setting
+    ofFbo::Settings s;
+    s.width = ofGetWidth();
+    s.height = ofGetHeight();
+    s.internalformat = GL_RGBA;
+    s.textureTarget = GL_TEXTURE_2D;
+    s.maxFilter = GL_LINEAR; GL_NEAREST;
+    s.numSamples = 0;
+    s.numColorbuffers = 1;
+    s.useDepth = true;
+    s.useStencil = false;
+    gpuBlur.setup(s, false);
+    
+    gpuBlur.blurOffset = 0.027;
+    gpuBlur.blurPasses = 5;
+    gpuBlur.numBlurOverlays = 1;
+    gpuBlur.blurOverlayGain = 255;
 }
 
 void ofApp::setupGui()
@@ -43,11 +61,13 @@ void ofApp::setupGui()
     gui.add(clearAnchorsButton.setup("C anchors"));
     gui.add(clearInstancesButton.setup("C instances"));
     gui.add(isModeGeometric.setup("geo mode", true));
+    gui.add(scale.setup("scale", 1.0, 0.5, 5.0));
 }
 
 #pragma mark - update
 //--------------------------------------------------------------
 void ofApp::update(){
+    $Context(Property)->scale = scale;
     $Context(AR)->processor->update();
     ofxGlobalContext::Manager::defaultManager().update();
     
@@ -92,25 +112,54 @@ void ofApp::update(){
 #pragma mark - draw
 //--------------------------------------------------------------
 void ofApp::draw() {
+    //=====================================
+    //カメラ画像を描画
+    ofSetColor(255);
     $Context(AR)->processor->draw();
-    ofEnableDepthTest();
+    //=====================================
     
+    //=====================================
+    //managerをfboに描画
+    ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+    gpuBlur.beginDrawScene();
+    {
+        ofClear(0, 0, 0, 0);
+        ofSetColor(255);
+        manager.draw(); //2Dで書く
+    }
+    gpuBlur.endDrawScene();
+    //=====================================
+    
+    //=====================================
+    //camera有効化、matrixかけてあげて、その中でfboを描画
     $Context(AR)->camera.begin();
     $Context(AR)->processor->setARCameraMatrices();
-    // === begin to draw stuff ===
-    switch($Context(Property)->drawMode)
-    {
-        case GEOMETRIC:
-            drawGeometricGraphics();
-            break;
-        case CAMERA_CAPTURE:
-            drawCaptures();
-            break;
-    }
-    // === end to draw stuff ===
-    $Context(AR)->camera.end();
     
-    ofDisableDepthTest();
+    if($Context(AR)->processor->getNumAnchors() > 0)
+    {
+        gpuBlur.performBlur();
+        
+        ofPushMatrix();
+        ofMultMatrix($Context(AR)->processor->getLastAnchorMatrix());
+        ofRotate(90,0,0,1); //z軸に90度回転
+        
+        ofTranslate(0, 0, -depth - $Context(Timer)->elapsed * speed);
+        {
+            //overlay the blur on top
+            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); //pre-multiplied alpha
+            gpuBlur.drawBlurFbo(ofPoint(-$Context(Property)->aspect * scale, -scale), $Context(Property)->aspect * 2 * scale, 2 * scale);
+            ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+            
+            //draw the "clean" scene
+            ofEnableBlendMode(OF_BLENDMODE_ADD);
+            gpuBlur.drawSceneFBO(ofPoint(-$Context(Property)->aspect * scale, -scale), $Context(Property)->aspect * 2 * scale, 2 * scale);
+        }
+        ofPopMatrix();
+        ofDisableBlendMode();
+    }
+    $Context(AR)->camera.end();
+    //=====================================
+    
     // draw debug information
     drawDebugInfo();
 }
@@ -129,7 +178,20 @@ void ofApp::drawGeometricGraphics()
         ofTranslate(0, 0, -depth - $Context(Timer)->elapsed * speed);
         {
             ofSetColor(255, 255);
-            manager.draw();
+            //==========================
+            //fboを、matrix内のサイズでdrawする（capture drawerと一緒）
+            gpuBlur.performBlur();
+            
+            //overlay the blur on top
+            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); //pre-multiplied alpha
+            gpuBlur.drawBlurFbo(ofPoint(-$Context(Property)->aspect/8, -0.125), $Context(Property)->aspect/4, 0.25);
+            ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+            
+            //draw the "clean" scene
+            ofEnableBlendMode(OF_BLENDMODE_ADD);
+            gpuBlur.drawSceneFBO(ofPoint(-$Context(Property)->aspect/8, -0.125), $Context(Property)->aspect/4, 0.25);
+            ofDisableBlendMode();
+            //==========================
         }
         ofPopMatrix();
         //===============================
@@ -244,7 +306,7 @@ void ofApp::onPressedCaptureButton()
         //一定数超えたらアンカー削除
         $Context(AR)->processor->removeAnchor(0);
     }
-    
+
     $Context(AR)->processor->addAnchor(-0.2);
     if($Context(Property)->drawMode == CAMERA_CAPTURE)
     {
