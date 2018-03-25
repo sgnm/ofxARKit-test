@@ -60,6 +60,9 @@ public:
     
     //bloom
     ofxFboBlur bloom;
+    
+    //effect
+    int effectIndex = 0;
 };
 
 

@@ -59,8 +59,9 @@ class OSC : public ofxGlobalContext::Context
 public:
     ofxOscReceiver receiver;
     string address = "";
-    int track = 0;
-    int note = 0;
+    float val;
+//    int track = 0;
+//    int note = 0;
     
     OSC()
     {
@@ -75,8 +76,9 @@ public:
             ofxOscMessage m;
             receiver.getNextMessage(m);
             address = m.getAddress();
-            track = m.getArgAsInt(0);
-            note = m.getArgAsInt(1);
+            val = m.getArgAsFloat(0);
+//            track = m.getArgAsInt(0);
+//            note = m.getArgAsInt(1);
         }
     }
 };

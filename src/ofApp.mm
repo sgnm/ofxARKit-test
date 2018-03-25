@@ -39,12 +39,12 @@ void ofApp::setupGui()
     clearInstancesButton.addListener(this, &ofApp::onPressedClearInstancesButton);
     isModeGeometric.addListener(this, &ofApp::onPressedModeGeometricToggle);
     isShowGui = true;
-    ofxGuiSetFont("fonts/mono0755.ttf",14,true,true);
+    ofxGuiSetFont("fonts/mono0755.ttf",20,true,true);
     ofxGuiSetTextPadding(4);
-    ofxGuiSetDefaultWidth(Config::Window::WIDTH/4);
-    ofxGuiSetDefaultHeight(54);
+    ofxGuiSetDefaultWidth(300);
+    ofxGuiSetDefaultHeight(80);
     gui.setup();
-    gui.setPosition(Config::Window::WIDTH/4 * 3 - 20, 60);
+    gui.setPosition(Config::Window::WIDTH/2, Config::Window::HEIGHT/2 - 80);
     gui.add(captureButton.setup("capture"));
     gui.add(animateButton.setup("animate"));
     gui.add(clearAnchorsButton.setup("C anchors"));
@@ -108,6 +108,16 @@ void ofApp::update(){
         {
             $Context(AR)->processor->removeAllAnchors();
             manager.clear();
+        }
+        
+        if($Context(OSC)->address == "/scale")
+        {
+            $Context(Property)->scale = $Context(OSC)->val;
+        }
+        
+        if($Context(OSC)->address == "/margin")
+        {
+            $Context(Property)->margin = $Context(OSC)->val;
         }
 //        cout << "note: " << $Context(OSC)->note << endl;
         //TODO:
@@ -214,11 +224,11 @@ void ofApp::drawOscInfo()
     static int x = 20;
     static int y = 40;
     font.drawString("address: " + $Context(OSC)->address, x, y + 125);
-    font.drawString("track: " + ofToString($Context(OSC)->track), x, y + 150);
-    font.drawString("note: " + ofToString($Context(OSC)->note), x, y + 175);
-    font.drawString("time: " + ofToString($Context(Timer)->elapsed), x, y + 200);
-    font.drawString("anchors num: " + ofToString($Context(AR)->processor->getNumAnchors()), x, y + 225);
-    font.drawString("planes num: " + ofToString($Context(AR)->processor->getNumPlanes()), x, y + 250);
+//    font.drawString("track: " + ofToString($Context(OSC)->track), x, y + 150);
+//    font.drawString("note: " + ofToString($Context(OSC)->note), x, y + 175);
+    font.drawString("time: " + ofToString($Context(Timer)->elapsed), x, y + 150);
+    font.drawString("anchors num: " + ofToString($Context(AR)->processor->getNumAnchors()), x, y + 175);
+    font.drawString("planes num: " + ofToString($Context(AR)->processor->getNumPlanes()), x, y + 200);
     static string drawModeString = "";
     switch($Context(Property)->drawMode)
     {
@@ -229,7 +239,7 @@ void ofApp::drawOscInfo()
             drawModeString = "Camera capture";
             break;
     }
-    font.drawString("draw mode: " + ofToString(drawModeString), x, y + 275);
+    font.drawString("draw mode: " + ofToString(drawModeString), x, y + 225);
 }
 
 void ofApp::drawDebugInfo()
@@ -304,10 +314,16 @@ void ofApp::onPressedAnimateButton()
             $Context(Property)->path.setStrokeWidth(strokeWidth);
             $Context(Property)->pathMir.setStrokeWidth(strokeWidth);
         }
-        int randIndex = ofRandom(13);
-//                int randIndex = 11;
-//        cout << "index: " << randIndex << endl;
-        switch (randIndex) {
+        
+        //現在のエフェクトと被らないように処理
+        int nowEffectIndex = effectIndex;
+        effectIndex = ofRandom(13);
+        while(nowEffectIndex == effectIndex)
+        {
+            effectIndex = ofRandom(13);
+        }
+        
+        switch (effectIndex) {
             case 0:
                 $Context(Property)->path.setFilled(true);
                 $Context(Property)->pathMir.setFilled(true);
