@@ -15,27 +15,16 @@ void ofApp::setup() {
     ofxGlobalContext::Manager::defaultManager().createContext<Timer>();
     $Context(Property)->aspect = ARCommon::getNativeAspectRatio();
     cout << "aspect: " << $Context(Property)->aspect << endl;
+    $Context(Property)->path.setCurveResolution(60);
+    $Context(Property)->path.setCircleResolution(60);
+    $Context(Property)->pathMir.setCurveResolution(60);
+    $Context(Property)->pathMir.setCircleResolution(60);
     
     //setup gui
     setupGui();
     
-    //blur setting
-    ofFbo::Settings s;
-    s.width = ofGetWidth();
-    s.height = ofGetHeight();
-    s.internalformat = GL_RGBA;
-    s.textureTarget = GL_TEXTURE_2D;
-    s.maxFilter = GL_LINEAR; GL_NEAREST;
-    s.numSamples = 0;
-    s.numColorbuffers = 1;
-    s.useDepth = true;
-    s.useStencil = false;
-    gpuBlur.setup(s, false);
-    
-    gpuBlur.blurOffset = 0.027;
-    gpuBlur.blurPasses = 5;
-    gpuBlur.numBlurOverlays = 1;
-    gpuBlur.blurOverlayGain = 255;
+    //bloom setting
+    setupBloom();
 }
 
 void ofApp::setupGui()
@@ -61,13 +50,33 @@ void ofApp::setupGui()
     gui.add(clearAnchorsButton.setup("C anchors"));
     gui.add(clearInstancesButton.setup("C instances"));
     gui.add(isModeGeometric.setup("geo mode", true));
-    gui.add(scale.setup("scale", 1.0, 0.5, 5.0));
+    gui.add($Context(Property)->scale.setup("scale", 2.0, 0.5, 5.0));
+    gui.add($Context(Property)->margin.setup("margin", -250, -500, 500));
+}
+
+void ofApp::setupBloom()
+{
+    ofFbo::Settings s;
+    s.width = ofGetWidth();
+    s.height = ofGetHeight();
+    s.internalformat = GL_RGBA;
+    s.textureTarget = GL_TEXTURE_2D;
+    s.maxFilter = GL_LINEAR; GL_NEAREST;
+    s.numSamples = 0;
+    s.numColorbuffers = 1;
+    s.useDepth = true;
+    s.useStencil = false;
+    bloom.setup(s, false);
+    
+    bloom.blurOffset = 0.027;
+    bloom.blurPasses = 5;
+    bloom.numBlurOverlays = 1;
+    bloom.blurOverlayGain = 255;
 }
 
 #pragma mark - update
 //--------------------------------------------------------------
 void ofApp::update(){
-    $Context(Property)->scale = scale;
     $Context(AR)->processor->update();
     ofxGlobalContext::Manager::defaultManager().update();
     
@@ -121,13 +130,13 @@ void ofApp::draw() {
     //=====================================
     //managerをfboに描画
     ofEnableBlendMode(OF_BLENDMODE_ALPHA);
-    gpuBlur.beginDrawScene();
+    bloom.beginDrawScene();
     {
         ofClear(0, 0, 0, 0);
         ofSetColor(255);
         manager.draw(); //2Dで書く
     }
-    gpuBlur.endDrawScene();
+    bloom.endDrawScene();
     //=====================================
     
     //=====================================
@@ -135,28 +144,16 @@ void ofApp::draw() {
     $Context(AR)->camera.begin();
     $Context(AR)->processor->setARCameraMatrices();
     
-    if($Context(AR)->processor->getNumAnchors() > 0)
+    switch($Context(Property)->drawMode)
     {
-        gpuBlur.performBlur();
-        
-        ofPushMatrix();
-        ofMultMatrix($Context(AR)->processor->getLastAnchorMatrix());
-        ofRotate(90,0,0,1); //z軸に90度回転
-        
-        ofTranslate(0, 0, -depth - $Context(Timer)->elapsed * speed);
-        {
-            //overlay the blur on top
-            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); //pre-multiplied alpha
-            gpuBlur.drawBlurFbo(ofPoint(-$Context(Property)->aspect * scale, -scale), $Context(Property)->aspect * 2 * scale, 2 * scale);
-            ofEnableBlendMode(OF_BLENDMODE_ALPHA);
-            
-            //draw the "clean" scene
-            ofEnableBlendMode(OF_BLENDMODE_ADD);
-            gpuBlur.drawSceneFBO(ofPoint(-$Context(Property)->aspect * scale, -scale), $Context(Property)->aspect * 2 * scale, 2 * scale);
-        }
-        ofPopMatrix();
-        ofDisableBlendMode();
+        case GEOMETRIC:
+            drawGeometricGraphics();
+            break;
+        case CAMERA_CAPTURE:
+            drawCaptures();
+            break;
     }
+    
     $Context(AR)->camera.end();
     //=====================================
     
@@ -168,62 +165,30 @@ void ofApp::drawGeometricGraphics()
 {
     if($Context(AR)->processor->getNumAnchors() > 0)
     {
+        bloom.performBlur();
+        
         //ジオメトリーックアニメーションを描画
         //===============================
-        //元
+        //元（コピーに関しては、それぞれのクラスでYをマイナスにして、Z軸反転でおk！）
         ofPushMatrix();
         ofMultMatrix($Context(AR)->processor->getLastAnchorMatrix());
         ofRotate(90,0,0,1); //z軸に90度回転
         
         ofTranslate(0, 0, -depth - $Context(Timer)->elapsed * speed);
         {
-            ofSetColor(255, 255);
-            //==========================
-            //fboを、matrix内のサイズでdrawする（capture drawerと一緒）
-            gpuBlur.performBlur();
-            
             //overlay the blur on top
             glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); //pre-multiplied alpha
-            gpuBlur.drawBlurFbo(ofPoint(-$Context(Property)->aspect/8, -0.125), $Context(Property)->aspect/4, 0.25);
+            bloom.drawBlurFbo(ofPoint(-$Context(Property)->aspect * $Context(Property)->scale, -$Context(Property)->scale), $Context(Property)->aspect * 2 * $Context(Property)->scale, 2 * $Context(Property)->scale);
             ofEnableBlendMode(OF_BLENDMODE_ALPHA);
             
             //draw the "clean" scene
             ofEnableBlendMode(OF_BLENDMODE_ADD);
-            gpuBlur.drawSceneFBO(ofPoint(-$Context(Property)->aspect/8, -0.125), $Context(Property)->aspect/4, 0.25);
-            ofDisableBlendMode();
-            //==========================
+            bloom.drawSceneFBO(ofPoint(-$Context(Property)->aspect * $Context(Property)->scale, -$Context(Property)->scale), $Context(Property)->aspect * 2 * $Context(Property)->scale, 2 * $Context(Property)->scale);
         }
         ofPopMatrix();
         //===============================
         
-        //===============================
-        //鏡、コピー
-        ofPushMatrix();
-        ofMatrix4x4 mat = $Context(AR)->processor->getLastAnchorMatrix();
-        
-        //移動行列、最初に検知した軸を元にy座標を反転
-        ofVec3f tl = mat.getTranslation();
-        tl.y *= -1.0;
-        mat.setTranslation(tl);
-        
-        //回転行列
-        // TODO: コピーのやつに、rotation（向きとか）を後で反映させる
-        ofQuaternion qt = mat.getRotate();
-//        qt.makeRotate(180, 0, 0, 1);
-        qt.inverse();
-        mat.setRotate(qt);
-        
-        ofMultMatrix(mat);
-        ofRotate(90,0,0,1); //z軸に90度回転
-        
-        ofTranslate(0, 0, -depth - $Context(Timer)->elapsed * speed);
-        {
-            ofSetColor(255, 150);
-            manager.draw();
-        }
-        
-        ofPopMatrix();
-        //===============================
+        ofDisableBlendMode();
     }
     else
     {
@@ -273,7 +238,6 @@ void ofApp::drawDebugInfo()
     {
         $Context(AR)->camera.begin();
         $Context(AR)->processor->setARCameraMatrices();
-        ofDrawAxis(10);
         ofSetColor(ofGetFrameNum() % 255);
         if($Context(AR)->processor->getNumAnchors() > 0)
         {
@@ -327,46 +291,72 @@ void ofApp::onPressedAnimateButton()
         
         //エフェクトをランダムに設定
         FillMode fillMode = static_cast<FillMode>(rand() % DUMMY_TO_COUNT);
+        if(fillMode == FILL)
+        {
+            $Context(Property)->path.setFilled(true);
+            $Context(Property)->pathMir.setFilled(true);
+        }
+        else
+        {
+            $Context(Property)->path.setFilled(false);
+            $Context(Property)->pathMir.setFilled(false);
+            int strokeWidth = ofRandom(2, 5);
+            $Context(Property)->path.setStrokeWidth(strokeWidth);
+            $Context(Property)->pathMir.setStrokeWidth(strokeWidth);
+        }
         int randIndex = ofRandom(13);
-//        int randIndex = 12;
+//                int randIndex = 11;
+//        cout << "index: " << randIndex << endl;
         switch (randIndex) {
             case 0:
-                manager.createInstance<Circle::Anim1>(fillMode)->play(0.5);
+                $Context(Property)->path.setFilled(true);
+                $Context(Property)->pathMir.setFilled(true);
+                manager.createInstance<Circle::CutOut>()->play(0.5);
                 break;
             case 1:
-                manager.createInstance<Circle::Bigger>(fillMode)->play(0.5);
+                manager.createInstance<Circle::Bigger>()->play(0.5);
                 break;
             case 2:
-                manager.createInstance<Circle::Smaller>(fillMode)->play(0.5);
+                $Context(Property)->path.setFilled(true);
+                $Context(Property)->pathMir.setFilled(true);
+                manager.createInstance<Circle::Smaller>()->play(0.5);
                 break;
             case 3:
-                manager.createInstance<Tri::Bigger>(fillMode)->play(0.5);
+                manager.createInstance<Tri::Bigger>()->play(0.5);
                 break;
             case 4:
                 manager.createInstance<Tri::Line>()->play(0.5);
                 break;
             case 5:
-                manager.createInstance<Tri::Rotate>(fillMode)->play(0.5);
+                manager.createInstance<Tri::Rotate>()->play(0.5);
                 break;
             case 6:
+                $Context(Property)->path.setFilled(true);
+                $Context(Property)->pathMir.setFilled(true);
                 manager.createInstance<Tri::CutOut>()->play(0.5);
                 break;
             case 7:
+                $Context(Property)->path.setFilled(true);
+                $Context(Property)->pathMir.setFilled(true);
                 manager.createInstance<Tri::CutOutRotate>()->play(0.5);
                 break;
             case 8:
-                manager.createInstance<Rectangle::Bigger>(fillMode)->play(0.5);
+                manager.createInstance<Rectangle::Bigger>()->play(0.5);
                 break;
             case 9:
                 manager.createInstance<Rectangle::Line>()->play(0.5);
                 break;
             case 10:
-                manager.createInstance<Rectangle::Rotate>(fillMode)->play(0.5);
+                manager.createInstance<Rectangle::Rotate>()->play(0.5);
                 break;
             case 11:
+                $Context(Property)->path.setFilled(true);
+                $Context(Property)->pathMir.setFilled(true);
                 manager.createInstance<Rectangle::CutOut>()->play(0.5);
                 break;
             case 12:
+                $Context(Property)->path.setFilled(true);
+                $Context(Property)->pathMir.setFilled(true);
                 manager.createInstance<Rectangle::CutOutRotate>()->play(0.5);
                 break;
                 

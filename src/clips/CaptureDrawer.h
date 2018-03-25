@@ -73,6 +73,11 @@ public:
             shader.setUniformTexture("texture", capturedFbo_.getTexture(), 0);
             
             capturedFbo_.draw(ofPoint(-$Context(Property)->aspect/8, -0.125), $Context(Property)->aspect/4, 0.25);
+            
+            ofPushMatrix();
+//            ofRotateZ(90);
+//            capturedFbo_.draw(ofPoint(-0.125, -$Context(Property)->aspect/8), 0.25, $Context(Property)->aspect/4);
+            ofPopMatrix();
         }
         shader.end();
         //=== draw end ===
@@ -82,6 +87,7 @@ public:
     
     void addCapturedFbo(const ofFbo &capturedFbo)
     {
+        cout << "w: " << ofGetWidth() << " / h: " << ofGetHeight() << endl;
         ofFbo fbo;
         fbo.allocate(Config::Window::WIDTH, Config::Window::HEIGHT, GL_RGBA);
         fbo.begin();
@@ -89,6 +95,10 @@ public:
             ofSetColor(255, 255);
             //w: 640 /h: 1136
             capturedFbo.draw(0, 0, Config::Window::WIDTH, Config::Window::HEIGHT);
+            
+            //fboもらうのは横だけど、rotateさせても左上は0, 0
+            //なので、横にした時は、左上（0, h）右上（0, 0）みたいな感じになる。
+            //getFbo()をまた別のfboにdrawしてあげる必要がある。
         }
         fbo.end();
         

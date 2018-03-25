@@ -18,6 +18,7 @@ class ofApp : public ofxiOSApp {
 public:
     void setup();
     void setupGui();
+    void setupBloom();
     void update();
     void draw();
     void drawOscInfo();
@@ -51,15 +52,14 @@ public:
     ofxToggle isModeGeometric;
     ofxPanel gui;
     bool isShowGui;
-    ofxFloatSlider scale;
     
     //clip manager
     ofxAnimationPrimitives::InstanceManager manager;
     float depth;
     float speed;
     
-    //blur
-    ofxFboBlur gpuBlur;
+    //bloom
+    ofxFboBlur bloom;
 };
 
 

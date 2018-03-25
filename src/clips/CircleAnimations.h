@@ -15,106 +15,128 @@ using namespace Config::Graphics;
 
 namespace Circle
 {
-
+    
 //マスクが大きくなる
-class Anim1 : public ofxAnimationPrimitives::Instance
+class CutOut : public ofxAnimationPrimitives::Instance
 {
+    //TODO:
+    /* 輪郭がギザギザしてる
+     * 外枠がアニメーション時に全く大きくなってない
+     * フェードアウトが少し早いかも→小さい円が大きい円に届いていない
+     */
+    
 public:
-    Anim1(FillMode fillMode = FILL)
+    CutOut()
     {
-        ring.setup();
     }
     
     void draw()
     {
-//        ofSetColor(255, getLife() * 255);
+        float outerRadius = ofClamp($Context(Property)->scale * 50 + Back::easeIn(getInvLife()) * -1.0, $Context(Property)->scale * 50, $Context(Property)->scale * 50 * 1.2);
+        float innerRadius = ofClamp(20 + $Context(Property)->scale * 50 * Quart::easeIn(getInvLife()), 0.0, $Context(Property)->scale * 50);
         
-        float outRad = ofClamp(SCALE + Back::easeIn(getInvLife()) * -1.0, SCALE, 0.3);
-        float inRad = ofClamp(0.2 + SCALE * Quart::easeIn(getInvLife()), 0.0, SCALE);
-        ring.setOuterRadius(outRad);
-        ring.setInnerRadius(inRad);
+        //元
+        $Context(Property)->path.clear();
+        $Context(Property)->path.setColor(ofColor(255, Quart::easeOut(getLife()) * 255));
+        ofPushMatrix();
+        {
+            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+            $Context(Property)->path.circle(0, 0, outerRadius); //大
+            $Context(Property)->path.circle(0, 0, innerRadius); //小
+            $Context(Property)->path.draw();
+        }
+        ofPopMatrix();
         
-        ring.draw();
+        //ミラー
+        $Context(Property)->pathMir.clear();
+        $Context(Property)->pathMir.setColor(ofColor(255, Quart::easeOut(getLife()) * 100));
+        ofPushMatrix();
+        {
+            ofTranslate(ofGetWidth()/2, ofGetHeight()/2 - $Context(Property)->margin);
+            ofRotateZ(180);
+            $Context(Property)->pathMir.circle(0, 0, outerRadius); //大
+            $Context(Property)->pathMir.circle(0, 0, innerRadius); //小
+            $Context(Property)->pathMir.draw();
+        }
+        ofPopMatrix();
     }
     
 private:
-    ofxRing ring;
 };
     
 //大きくなる
 class Bigger : public ofxAnimationPrimitives::Instance
 {
 public:
-    Bigger(FillMode fillMode = FILL)
+    Bigger()
     {
-//        matrix_ = $Context(AR)->processor->getLastAnchorMatrix();
-        fillMode_ = fillMode;
-        ofSetLineWidth(LINE_WIDTH);
     }
     
     void draw()
     {
-//        ofPushMatrix();
-//        ofMultMatrix(matrix_);
-//        ofRotate(90,0,0,1);
-        // === draw begin ===
-        
-//        ofSetColor(255, getLife() * 255);
-        //TODO: global depth
-        switch(fillMode_)
+        //元
+        $Context(Property)->path.clear();
+        $Context(Property)->path.setColor(ofColor(255, Quart::easeOut(getLife()) * 255));
+        ofPushMatrix();
         {
-            case FILL:
-                ofFill();
-                break;
-            case NO_FILL:
-                ofNoFill();
-                break;
+            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+            $Context(Property)->path.circle(0, 0, $Context(Property)->scale * 50 * Quart::easeOut(getInvLife())); //大
+            $Context(Property)->path.draw();
         }
-//        ofDrawCircle(0, 0, SCALE * Quart::easeOut(getInvLife()));
-        ofDrawCircle(ofGetWidth()/2, ofGetHeight()/2, $Context(Property)->scale * 50 * Quart::easeOut(getInvLife()));
+        ofPopMatrix();
         
-        // === draw end ===
-//        ofPopMatrix();
+        //ミラー
+        $Context(Property)->pathMir.clear();
+        $Context(Property)->pathMir.setColor(ofColor(255, Quart::easeOut(getLife()) * 100));
+        ofPushMatrix();
+        {
+            ofTranslate(ofGetWidth()/2, ofGetHeight()/2 - $Context(Property)->margin);
+            ofRotateZ(180);
+            $Context(Property)->pathMir.circle(0, 0, $Context(Property)->scale * 50 * Quart::easeOut(getInvLife())); //大
+            $Context(Property)->pathMir.draw();
+        }
+        ofPopMatrix();
     }
     
 private:
-    FillMode fillMode_;
-    ofMatrix4x4 matrix_;
 };
 
 //小さくなる
 class Smaller : public ofxAnimationPrimitives::Instance
 {
 public:
-    Smaller(FillMode fillMode = FILL)
+    Smaller()
     {
-        fillMode_ = fillMode;
-        ofSetLineWidth(LINE_WIDTH);
     }
     
     void draw()
     {
-        
-//        ofSetColor(255, getLife() * 255);
-        //TODO: global depth
-        switch(fillMode_)
-        {
-            case FILL:
-                ofFill();
-                break;
-            case NO_FILL:
-                ofNoFill();
-                break;
-        }
-//        ofDrawCircle(0, 0, SCALE * Quart::easeOut(getLife()));
         //小さくなる必要ない。大きいままfade outした方がきれい
-        ofDrawCircle(0, 0, SCALE);
+        //元
+        $Context(Property)->path.clear();
+        $Context(Property)->path.setColor(ofColor(255, Quart::easeOut(getLife()) * 255));
+        ofPushMatrix();
+        {
+            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+            $Context(Property)->path.circle(0, 0, $Context(Property)->scale * 50); //大
+            $Context(Property)->path.draw();
+        }
+        ofPopMatrix();
+        
+        //ミラー
+        $Context(Property)->pathMir.clear();
+        $Context(Property)->pathMir.setColor(ofColor(255, Quart::easeOut(getLife()) * 100));
+        ofPushMatrix();
+        {
+            ofTranslate(ofGetWidth()/2, ofGetHeight()/2 - $Context(Property)->margin);
+            ofRotateZ(180);
+            $Context(Property)->pathMir.circle(0, 0, $Context(Property)->scale * 50); //大
+            $Context(Property)->pathMir.draw();
+        }
+        ofPopMatrix();
     }
     
 private:
-    FillMode fillMode_;
 };
-
-//
 
 }

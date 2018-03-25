@@ -9,14 +9,18 @@
 
 #include "Config.h"
 #include "ofxGlobalContext.h"
+#include "ofxGui.h"
 
 class Property : public ofxGlobalContext::Context
 {
 public:
     float aspect;
     float volume;
-    float scale;
+    ofxFloatSlider scale;
+    ofxIntSlider margin;
     Config::Graphics::DrawMode drawMode;
+    ofPath path;
+    ofPath pathMir;
     
     Property()
     {
