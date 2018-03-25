@@ -43,6 +43,7 @@ public:
             ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
             $Context(Property)->path.circle(0, 0, outerRadius); //大
             $Context(Property)->path.circle(0, 0, innerRadius); //小
+            $Context(Property)->path.close();
             $Context(Property)->path.draw();
         }
         ofPopMatrix();
@@ -52,10 +53,11 @@ public:
         $Context(Property)->pathMir.setColor(ofColor(255, Quart::easeOut(getLife()) * 100));
         ofPushMatrix();
         {
-            ofTranslate(ofGetWidth()/2, ofGetHeight()/2 - $Context(Property)->margin);
-            ofRotateZ(180);
+            ofTranslate(ofGetWidth()/2 - $Context(Property)->margin, ofGetHeight()/2);
+            
             $Context(Property)->pathMir.circle(0, 0, outerRadius); //大
             $Context(Property)->pathMir.circle(0, 0, innerRadius); //小
+            $Context(Property)->path.close();
             $Context(Property)->pathMir.draw();
         }
         ofPopMatrix();
@@ -81,6 +83,7 @@ public:
         {
             ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
             $Context(Property)->path.circle(0, 0, $Context(Property)->scale * 50 * Quart::easeOut(getInvLife())); //大
+            $Context(Property)->path.close();
             $Context(Property)->path.draw();
         }
         ofPopMatrix();
@@ -90,9 +93,10 @@ public:
         $Context(Property)->pathMir.setColor(ofColor(255, Quart::easeOut(getLife()) * 100));
         ofPushMatrix();
         {
-            ofTranslate(ofGetWidth()/2, ofGetHeight()/2 - $Context(Property)->margin);
-            ofRotateZ(180);
+            ofTranslate(ofGetWidth()/2 - $Context(Property)->margin, ofGetHeight()/2);
+            
             $Context(Property)->pathMir.circle(0, 0, $Context(Property)->scale * 50 * Quart::easeOut(getInvLife())); //大
+            $Context(Property)->path.close();
             $Context(Property)->pathMir.draw();
         }
         ofPopMatrix();
@@ -119,6 +123,7 @@ public:
         {
             ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
             $Context(Property)->path.circle(0, 0, $Context(Property)->scale * 50); //大
+            $Context(Property)->path.close();
             $Context(Property)->path.draw();
         }
         ofPopMatrix();
@@ -128,9 +133,10 @@ public:
         $Context(Property)->pathMir.setColor(ofColor(255, Quart::easeOut(getLife()) * 100));
         ofPushMatrix();
         {
-            ofTranslate(ofGetWidth()/2, ofGetHeight()/2 - $Context(Property)->margin);
-            ofRotateZ(180);
+            ofTranslate(ofGetWidth()/2 - $Context(Property)->margin, ofGetHeight()/2);
+            
             $Context(Property)->pathMir.circle(0, 0, $Context(Property)->scale * 50); //大
+            $Context(Property)->path.close();
             $Context(Property)->pathMir.draw();
         }
         ofPopMatrix();

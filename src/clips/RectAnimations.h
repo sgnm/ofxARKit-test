@@ -40,8 +40,8 @@ public:
         $Context(Property)->pathMir.setColor(ofColor(255, Quart::easeOut(getLife()) * 100));
         ofPushMatrix();
         {
-            ofTranslate(ofGetWidth()/2, ofGetHeight()/2 - $Context(Property)->margin);
-            ofRotateZ(180);
+            ofTranslate(ofGetWidth()/2 - $Context(Property)->margin, ofGetHeight()/2);
+            
             float v = Quart::easeOut(getInvLife());
             $Context(Property)->pathMir.rectangle(-size/2 * v, -size/2 * v, size * v, size * v);
             $Context(Property)->pathMir.draw();
@@ -107,8 +107,8 @@ public:
         $Context(Property)->path.setColor(ofColor(255, Quart::easeOut(getLife()) * 100));
         ofPushMatrix();
         {
-            ofTranslate(ofGetWidth()/2, ofGetHeight()/2 - $Context(Property)->margin);
-            ofRotateZ(180);
+            ofTranslate(ofGetWidth()/2 - $Context(Property)->margin, ofGetHeight()/2);
+            
             $Context(Property)->pathMir.moveTo(originPos[0]);
             $Context(Property)->pathMir.lineTo(originPos[0] + (targetPos[0] - originPos[0]) * Quart::easeOut(getInvLife()));
             $Context(Property)->pathMir.moveTo(originPos[1]);
@@ -170,8 +170,8 @@ public:
         $Context(Property)->pathMir.setColor(ofColor(255, Quart::easeOut(getLife()) * 100));
         ofPushMatrix();
         {
-            ofTranslate(ofGetWidth()/2, ofGetHeight()/2 - $Context(Property)->margin);
-            ofRotateZ(180);
+            ofTranslate(ofGetWidth()/2 - $Context(Property)->margin, ofGetHeight()/2);
+            
             float v = Quart::easeOut(getInvLife());
             ofRotateZ(-rotation * v);
             $Context(Property)->pathMir.rectangle(-size/2 * v, -size/2 * v, size * v, size * v);
@@ -225,8 +225,8 @@ public:
         $Context(Property)->pathMir.setColor(ofColor(255, Quart::easeOut(getLife()) * 100));
         ofPushMatrix();
         {
-            ofTranslate(ofGetWidth()/2, ofGetHeight()/2 - $Context(Property)->margin);
-            ofRotateZ(180);
+            ofTranslate(ofGetWidth()/2 - $Context(Property)->margin, ofGetHeight()/2);
+            
             float v = Quart::easeIn(getInvLife());
             //            ofRotateZ(rotation * v);
             $Context(Property)->pathMir.rectangle(-size/2, -size/2, size, size);
@@ -281,8 +281,8 @@ public:
         $Context(Property)->pathMir.setColor(ofColor(255, Quart::easeOut(getLife()) * 100));
         ofPushMatrix();
         {
-            ofTranslate(ofGetWidth()/2, ofGetHeight()/2 - $Context(Property)->margin);
-            ofRotateZ(180);
+            ofTranslate(ofGetWidth()/2 - $Context(Property)->margin, ofGetHeight()/2);
+            
             ofRotateZ(-rotation * Quart::easeOut(getInvLife()));
             float v = Quart::easeIn(getInvLife());
             $Context(Property)->pathMir.rectangle(-size/2, -size/2, size, size);
