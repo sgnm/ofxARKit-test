@@ -8,7 +8,6 @@
 #pragma once
 
 #include "Config.h"
-#include "ofxRing.h"
 
 using namespace ofx::AnimationPrimitives::Easing;
 using namespace Config::Graphics;
